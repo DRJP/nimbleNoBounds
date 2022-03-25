@@ -53,7 +53,7 @@
 NULL
 
 
-#' @rdname dLogGamme
+#' @rdname dLogGamma
 #' @export
 dLogGamma <- nimbleFunction (
   run = function(x     = double(0),
@@ -72,7 +72,7 @@ dLogGamma <- nimbleFunction (
   }
 )
 
-#' @rdname dLogGamme
+#' @rdname dLogGamma
 #' @export
 rLogGamma <- nimbleFunction (
   run = function(n     = integer(0, default=1),

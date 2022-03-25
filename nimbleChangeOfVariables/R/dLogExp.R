@@ -41,7 +41,7 @@
 ##' par(mfrow=n2mfrow(3))
 ##' ## Plot 1: MCMC trajectory
 ##' plot(x, typ="l")
-## Plot 2: taget density on unbounded sampling scale
+##' ## Plot 2: taget density on unbounded sampling scale
 ##' hist(x, n=100, freq=FALSE)
 ##' curve(dLogExp(x, rate=0.5), -15, 5, n=1001, col="red", lwd=3, add=TRUE)
 ##' ## Plot 3: taget density on bounded scale

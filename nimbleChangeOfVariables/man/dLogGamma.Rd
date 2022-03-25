@@ -37,12 +37,12 @@ x      = log(y)
 par(mfrow=n2mfrow(2))
 ## Plot 1
 hist(x, n=100, freq=FALSE)
-curve(dLogGamma(x, shape=shape, scale=scale), -15, 4, n=1001, col="red", add=TRUE, lty=3)
+curve(dLogGamma(x, shape=shape, scale=scale), -4, 5, n=1001, col="red", add=TRUE, lwd=3)
 ## Plot 2: back-transformed
 xNew = replicate(n=n, rLogGamma(n=1, shape=shape, scale=scale))
 yNew   = exp(xNew)
 hist(yNew, n=100, freq=FALSE, xlab="exp(x)")
-curve(dexp(x, shape=shape, scale=scale), 0, 4, n=1001, col="red", lwd=3, add=TRUE)
+curve(dgamma(x, shape=shape, scale=scale), 0, 4, n=1001, col="red", lwd=3, add=TRUE)
 
 code = nimbleCode({
   x ~ dLogGamma(shape=shape, scale=scale)
@@ -60,7 +60,7 @@ hist(x, n=100, freq=FALSE)
 curve(dLogGamma(x, shape=shape, scale=scale), -15, 5, n=1001, col="red", lwd=3, add=TRUE)
 ## Plot 3: taget density on bounded scale
 hist(exp(x), n=100, freq=FALSE)
-curve(dexp(x, shape=shape, scale=scale), 0, 25, n=1001, col="red", lwd=3, add=TRUE)
+curve(dgamma(x, shape=shape, scale=scale), 0, 25, n=1001, col="red", lwd=3, add=TRUE)
 }
 \author{
 David R.J. Pleydell

@@ -1,0 +1,17 @@
+*.Rdata
+*.Rhistory
+*.pdf
+*.png
+*.tiff
+*.jpg
+*.jpeg
+*.mp4
+*.ps
+*.tar.gz
+*.zip
+*.Rcheck
+nimble-snippets.Rcheck
+nimbleAPT.Rcheck
+nimbleAPT/vignettes/*.html
+nimbleAPT/vignettes/*.R
+.Rbuildignore

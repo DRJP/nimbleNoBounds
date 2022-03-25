@@ -1,0 +1,23 @@
+Package: nimbleChangeOfVariables
+Type: Package
+Title: Common uni-variate probability distributions transformed to unbounded scales.
+Version: 1.0.0
+Encoding: UTF-8
+Date: 2022-03-25
+Maintainer: David Pleydell <david.pleydell@inrae.fr>
+Author: person("David", "Pleydell", email="david.pleydell@inrae.fr", role=c("aut","cre","cph"), comment = c("Package developer", ORCID = "0000-0002-6450-1475"))
+URL: https://github.com/DRJP/nimbleChangeOfVariables
+Description: A collection of common univariate probability distributions transformed to unbounded scales, for the purpose of increased MCMC efficiency.
+License: BSD_3_clause + file LICENSE
+Copyright: See COPYRIGHTS file.
+RoxygenNote: 7.1.2
+Depends:
+    R (>= 3.1.2),
+    nimble
+Imports:
+    methods
+Suggests:
+    knitr,
+	rmarkdown,
+	coda
+VignetteBuilder: knitr

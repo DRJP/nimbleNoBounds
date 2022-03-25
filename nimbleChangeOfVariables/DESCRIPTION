@@ -1,6 +1,6 @@
 Package: nimbleChangeOfVariables
 Type: Package
-Title: Common uni-variate probability distributions transformed to unbounded scales.
+Title: Common univariate probability distributions transformed to unbounded scales.
 Version: 1.0.0
 Encoding: UTF-8
 Date: 2022-03-25

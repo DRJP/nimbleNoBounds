@@ -36,7 +36,7 @@ knitr::opts_chunk$set(
 
 The following toy problem compares sampling of bounded and unbounded distributions.
 
-First, we create a nimble model with a collecion of a various distributions.
+First, we create nimble models with both classical bounded distributions, and with unbounded transformed equivalents.
 
 ```{r model, fig.width=7, fig.height=7}
 library(nimbleNoBounds) # Also loads nimble
@@ -49,69 +49,79 @@ boundedCode <- nimbleCode({
 })
 
 unboundedCode <- nimbleCode({
-  tb ~ dLogitBeta(b1, b2)
-  tu ~ dLogitUnif(u1, u2)
+  timeB ~ dLogitBeta(b1, b2)
+  timeU ~ dLogitUnif(u1, u2)
   te ~ dLogExp(e1)
   tg ~ dLogGamma(g1, g2)
-  b = ilogit(tb)
-  u = (u2*exp(tu)+u1)/(u2-u1)
-  e = exp(te)
-  g = exp(tg)
+  b <- ilogit(timeB)
+  u <- (u2*exp(timeU)+u1)/(u2-u1)
+  e <- exp(te)
+  g <- exp(tg)
 })
-
 
 const = list(b1=1, b2=11, u1=-6, u2=66, e1=0.1, g1=0.1, g2=10)
 
-rModel <- nimbleModel(bugsCode,
-                      constants=list(nObs=nObs, cholCov=covChol),
-                      inits=list(centroids=centroids))
-```
+rBounded   <- nimbleModel(boundedCode, constants=const)
+rUnbounded <- nimbleModel(unboundedCode, constants=const)
 
-Now use the model to simulate some data and initialise/specify the model's data nodes.
+cBounded   <- compileNimble(rBounded)
+cUnbounded <- compileNimble(rUnbounded)
 
-```{r sim, fig.width=7, fig.height=7}
-simulate(rModel, "y") ## Use model to simulate data
-
-rModel <- nimbleModel(bugsCode,
-                      constants=list(nObs=nObs, cholCov=covChol),
-                      data=list(y=rModel$y),
-                      inits=list(centroids=centroids))
-
-cModel <- compileNimble(rModel)
-
-plot(cModel$y, typ="p", xlab="", ylab="", xlim=c(-1,1)*max(cModel$y), ylim=c(-1,1)*max(cModel$y), pch=4)
-points(x=cModel$centroids[1], y=cModel$centroids[1], col="red", pch=4, cex=3)
-points(x=-cModel$centroids[1], y=cModel$centroids[1], col="red", pch=4, cex=3)
-points(x=cModel$centroids[1], y=-cModel$centroids[1], col="red", pch=4, cex=3)
-points(x=-cModel$centroids[1], y=-cModel$centroids[1], col="red", pch=4, cex=3)
-legend("topleft", c("posterior modes", "data"), col=c("red","black"), pch=4, cex=2)
 
 ```
 
+Now we perform MCMC using nimble's univariate Metropolis Hastings sampler.
 
-Now for some standard MCMC using nimble's default choice of samplers.
 
 ```{r fitting1, fig.width=7, fig.height=7}
+monitorNodes = c("b","u","e","g")
 
-simulate(cModel, "centroids")
-mcmcR <- buildMCMC(configureMCMC(cModel, nodes="centroids", monitors="centroids"), print=TRUE)
+configureMcmcB = configureMCMC(cBounded,   monitors=monitorNodes)
+configureMcmcU = configureMCMC(cUnbounded, monitors=monitorNodes)
 
-mcmcC <- compileNimble(mcmcR)
+configureMcmcB$removeSamplers()
+configureMcmcB$addSampler("b")
+configureMcmcB$addSampler("u")
+configureMcmcB$addSampler("e")
+configureMcmcB$addSampler("g")
 
-mcmcC$run(niter=15000)
+configureMcmcU$removeSamplers()
+configureMcmcU$addSampler("tb")
+configureMcmcU$addSampler("tu")
+configureMcmcU$addSampler("te")
+configureMcmcU$addSampler("tg")
 
-samples <- tail(as.matrix(mcmcC$mvSamples), 10000)
-summary(samples)
+rMcmcBounded   <- buildMCMC(configureMcmcB)
+rMcmcUnbounded <- buildMCMC(configureMcmcU)
 
-plot(samples, xlab="", ylab="", typ="l", xlim=c(-1,1)*max(cModel$y), ylim=c(-1,1)*max(cModel$y))
-points(x=cModel$centroids[1], y=cModel$centroids[1], col="red", pch=4, cex=3)
-points(x=-cModel$centroids[1], y=cModel$centroids[1], col="red", pch=4, cex=3)
-points(x=cModel$centroids[1], y=-cModel$centroids[1], col="red", pch=4, cex=3)
-points(x=-cModel$centroids[1], y=-cModel$centroids[1], col="red", pch=4, cex=3)
-legend("topleft", legend=c("posterior modes","jumps"), col=c("red","black"), pch=c("X","_"), bg="white")
+cMcmcBounded   <- compileNimble(rMcmcBounded)
+cMcmcUnbounded <- compileNimble(rMcmcUnbounded)
 
-library(coda)      # Loads coda
-plot(as.mcmc(samples))
+nReps = 10
+gain = matrix(0, ncol=length(monitorNodes), nrow=nReps)
+for (ii in 1:nReps) {
+  if (ii %% 10 == 0)
+    print(ii)
+  ## Run MCMC
+  timeB = system.time(cMcmcBounded$run(niter=1E6))["elapsed"]
+  timeU = system.time(cMcmcUnbounded$run(niter=1E6))["elapsed"]
+  ## Extract samples
+  samplesB <- as.matrix(cMcmcBounded$mvSamples)
+  samplesU <- as.matrix(cMcmcUnbounded$mvSamples)
+  ## Calcualte effective sample size
+  effB = coda::effectiveSize(samplesB)
+  effU = coda::effectiveSize(samplesU)
+  ## Calculate sampling efficiency
+  (efficiencyB = effB / timeB)
+  (efficiencyU = effU / timeU)
+  ## Calcyulate efficiency gain
+  (efficiencyGain = efficiencyU / efficiencyB)
+  gain[ii,] = efficiencyGain
+}
+colnames(gain) = monitorNodes
+
+boxplot
+
 ```
 
 As we can see, the default MCMC scheme makes few, if any, jumps between the four potential modes.

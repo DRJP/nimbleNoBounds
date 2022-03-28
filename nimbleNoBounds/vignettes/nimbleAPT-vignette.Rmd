@@ -1,0 +1,157 @@
+---
+title: "A quick guide to nimbleNoBounds"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{A quick guide to nimbleNoBounds}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+<!-- Add this vignette to the documentation via roxygen2::roxygenise() and  R CMD build -->
+
+<!-- setwd("/home/pleydell/nimbleProject/nimble-snippets/nimbleAPT"); roxygen2::roxygenise() -->
+
+# Introduction
+
+This vignette assumes the reader is already familiar with using [nimble](https://r-nimble.org/) to perform Markov chain Monte Carlo (MCMC).
+
+The principal motivation of this package is that bounds on prior distributions can impair MCMC performance when posterior distributions are located close to those bounds.
+In particular, when using Metropolis Hastings, making proposals beyond known bounds, just to have them rejected, will increase rejection rates.
+Moreover, in adaptive Metropolis Hastings, such increased rejection rates will lead to shrinking the Metropolis Hastings kernel, thereby increasing the auto-correlation in the accepted samples and reducing the effective sample size.
+
+This package offers a simple solution to avoid these scenarios. Common bounded probability distributions (beta, unifom, exponential, gamma) are transformed to the unbounded real line via
+log or logit transformations.
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Toy example
+
+The following toy problem compares sampling of bounded and unbounded distributions.
+
+First, we create a nimble model with a collecion of a various distributions.
+
+```{r model, fig.width=7, fig.height=7}
+library(nimbleNoBounds) # Also loads nimble
+
+boundedCode <- nimbleCode({
+  b ~ dbeta(b1, b2)
+  u ~ dunif(u1, u2)
+  e ~ dexp(e1)
+  g ~ dgamma(g1, g2)
+})
+
+unboundedCode <- nimbleCode({
+  tb ~ dLogitBeta(b1, b2)
+  tu ~ dLogitUnif(u1, u2)
+  te ~ dLogExp(e1)
+  tg ~ dLogGamma(g1, g2)
+  b = ilogit(tb)
+  u = (u2*exp(tu)+u1)/(u2-u1)
+  e = exp(te)
+  g = exp(tg)
+})
+
+
+const = list(b1=1, b2=11, u1=-6, u2=66, e1=0.1, g1=0.1, g2=10)
+
+rModel <- nimbleModel(bugsCode,
+                      constants=list(nObs=nObs, cholCov=covChol),
+                      inits=list(centroids=centroids))
+```
+
+Now use the model to simulate some data and initialise/specify the model's data nodes.
+
+```{r sim, fig.width=7, fig.height=7}
+simulate(rModel, "y") ## Use model to simulate data
+
+rModel <- nimbleModel(bugsCode,
+                      constants=list(nObs=nObs, cholCov=covChol),
+                      data=list(y=rModel$y),
+                      inits=list(centroids=centroids))
+
+cModel <- compileNimble(rModel)
+
+plot(cModel$y, typ="p", xlab="", ylab="", xlim=c(-1,1)*max(cModel$y), ylim=c(-1,1)*max(cModel$y), pch=4)
+points(x=cModel$centroids[1], y=cModel$centroids[1], col="red", pch=4, cex=3)
+points(x=-cModel$centroids[1], y=cModel$centroids[1], col="red", pch=4, cex=3)
+points(x=cModel$centroids[1], y=-cModel$centroids[1], col="red", pch=4, cex=3)
+points(x=-cModel$centroids[1], y=-cModel$centroids[1], col="red", pch=4, cex=3)
+legend("topleft", c("posterior modes", "data"), col=c("red","black"), pch=4, cex=2)
+
+```
+
+
+Now for some standard MCMC using nimble's default choice of samplers.
+
+```{r fitting1, fig.width=7, fig.height=7}
+
+simulate(cModel, "centroids")
+mcmcR <- buildMCMC(configureMCMC(cModel, nodes="centroids", monitors="centroids"), print=TRUE)
+
+mcmcC <- compileNimble(mcmcR)
+
+mcmcC$run(niter=15000)
+
+samples <- tail(as.matrix(mcmcC$mvSamples), 10000)
+summary(samples)
+
+plot(samples, xlab="", ylab="", typ="l", xlim=c(-1,1)*max(cModel$y), ylim=c(-1,1)*max(cModel$y))
+points(x=cModel$centroids[1], y=cModel$centroids[1], col="red", pch=4, cex=3)
+points(x=-cModel$centroids[1], y=cModel$centroids[1], col="red", pch=4, cex=3)
+points(x=cModel$centroids[1], y=-cModel$centroids[1], col="red", pch=4, cex=3)
+points(x=-cModel$centroids[1], y=-cModel$centroids[1], col="red", pch=4, cex=3)
+legend("topleft", legend=c("posterior modes","jumps"), col=c("red","black"), pch=c("X","_"), bg="white")
+
+library(coda)      # Loads coda
+plot(as.mcmc(samples))
+```
+
+As we can see, the default MCMC scheme makes few, if any, jumps between the four potential modes.
+
+So let's try with adaptive parallel tempering (APT).
+
+
+```{r fitting2, fig.width=7, fig.height=7}
+
+conf <- configureMCMC(cModel, nodes="centroids", monitors="centroids", enableWAIC = TRUE)
+conf$removeSamplers()
+conf$addSampler("centroids[1]", type="sampler_RW_tempered", control=list(temperPriors=TRUE))
+conf$addSampler("centroids[2]", type="sampler_RW_tempered", control=list(temperPriors=TRUE))
+conf
+
+aptR <- buildAPT(conf, Temps=1:5, ULT= 1000, print=TRUE)
+
+aptC <- compileNimble(aptR)
+
+aptC$run(niter=15000)
+
+samples <- tail(as.matrix(aptC$mvSamples), 10000)
+summary(samples)
+
+plot(samples, xlab="", ylab="", typ="l", xlim=c(-1,1)*max(cModel$y), ylim=c(-1,1)*max(cModel$y))
+points(samples, col="red", pch=19, cex=0.1)
+legend("topleft", legend=c("jumps", "samples"), col=c("black","red"), pch=c("_","X"), bg="white")
+
+plot(as.mcmc(samples))
+
+plot(as.mcmc(aptC$logProbs))
+
+aptC$calculateWAIC()
+
+
+```
+
+We can see that jumps between nodes (black lines) are frequent and that each node has been sampled (red points).
+The precision with which the weight of each posterior mode is estimated can be increased by increasing
+1. the number of rungs in the temperature ladder, and moreover
+2. the number of iterations (niter).
+
+Finally, note that WAIC can be computed in exactly the same way as in nimble. See the section 'calculating WAIC' in the nimble manual for further details.

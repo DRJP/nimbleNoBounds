@@ -2,8 +2,12 @@
 
 export(dLogExp)
 export(dLogGamma)
+export(dLogitBeta)
+export(dLogitUnif)
 export(rLogExp)
 export(rLogGamma)
+export(rLogitBeta)
+export(rLogitUnif)
 import(nimble)
 importFrom(stats,dexp)
 importFrom(stats,dgamma)

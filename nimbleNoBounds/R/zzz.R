@@ -31,13 +31,13 @@
   registerDistributions(list(dLogitBeta = list(
     BUGSdist = "dLogitBeta(shape1, shape2)",
     discrete = FALSE,
-    types    = c("value=double(0)"),
+    types    = c("value=double(0)", "shape1=double(0)", "shape2=double(0)"),
     pqAvail  = FALSE)))
 
   registerDistributions(list(dLogitUnif = list(
-    BUGSdist = "dLogitBeta(min, max)",
+    BUGSdist = "dLogitUnif(min, max)",
     discrete = FALSE,
-    types    = c("value=double(0)"),
+    types    = c("value=double(0)", "max=double(0)", "max=double(0)"),
     pqAvail  = FALSE)))
 
 

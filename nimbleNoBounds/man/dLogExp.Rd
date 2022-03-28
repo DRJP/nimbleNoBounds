@@ -34,7 +34,7 @@ x      = log(y)
 par(mfrow=n2mfrow(2))
 ## Plot 1
 hist(x, n=100, freq=FALSE)
-curve(dLogExp(x, rate=lambda), -15, 4, n=1001, col="red", add=TRUE, lty=3)
+curve(dLogExp(x, rate=lambda), -15, 4, n=1001, col="red", add=TRUE, lwd=3)
 ## Plot 2: back-transformed
 xNew = replicate(n=n, rLogExp(n=1, rate=lambda))
 yNew   = exp(xNew)
@@ -53,6 +53,7 @@ x = as.vector(runMCMC(mcmc=cMcmc, niter=50000))
 par(mfrow=n2mfrow(3))
 ## Plot 1: MCMC trajectory
 plot(x, typ="l")
+## Plot 2: taget density on unbounded sampling scale
 hist(x, n=100, freq=FALSE)
 curve(dLogExp(x, rate=0.5), -15, 5, n=1001, col="red", lwd=3, add=TRUE)
 ## Plot 3: taget density on bounded scale

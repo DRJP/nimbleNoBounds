@@ -1,9 +1,9 @@
 ##' Logit transformed beta distribution.
 ##'
-##' .. content for \details{} ..
+##' Logit transformation of beta random variable to the real line.
 ##' @name dLogitBeta
 ##'
-##' @param x
+##' @param x A continuous random varaible on the real line, where y=ilogit(x) and y ~ dbeta(shape1, shape2).
 ##' @param shape1 non-negative parameter of the Beta distribution.
 ##' @param shape2 non-negative parameter of the Beta distribution.
 ##' @param log    logical flag. Returns log-density if TRUE.

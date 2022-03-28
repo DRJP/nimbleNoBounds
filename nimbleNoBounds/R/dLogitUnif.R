@@ -1,9 +1,9 @@
 ##' Logit transformed beta distribution.
 ##'
-##' .. content for \details{} ..
-##' @name dLogitBeta
+##' Transformation of uniform distribution, via scaled-logit transform, to the real line.
+##' @name dLogitUnif
 ##'
-##' @param x
+##' @param x A continuous random varaible on the real line, where y=ilogit(x)*(max-min)+min and y ~ dunif(min, max).
 ##' @param min lower limit of the distribution.  Must be finite.
 ##' @param max upper limit of the distribution.  Must be finite.
 ##' @param log logical flag. Returns log-density if TRUE.

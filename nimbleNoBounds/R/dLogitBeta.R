@@ -1,0 +1,90 @@
+##' Logit transformed beta distribution.
+##'
+##' .. content for \details{} ..
+##' @name dLogitBeta
+##'
+##' @param x
+##' @param shape1 non-negative parameter of the Beta distribution.
+##' @param shape2 non-negative parameter of the Beta distribution.
+##' @param log    logical flag. Returns log-density if TRUE.
+##'
+##' @return density or log-density of beta distributions transformed to real line via logit function.
+##'
+##' @author pleydell
+##'
+##' @examples
+##'
+##' n      = 100000
+##' sh1    = 1
+##' sh2    = 11
+##' y      = rbeta(n=n, sh1, sh2)
+##' x      = logit(y)
+##'
+##' par(mfrow=n2mfrow(2))
+##' ## Plot 1
+##' hist(x, n=100, freq=FALSE)
+##' curve(dLogitBeta(x, sh1, sh2), -15, 4, n=1001, col="red", add=TRUE, lwd=3)
+##' ## Plot 2: back-transformed
+##' xNew = replicate(n=n, rLogitBeta(n=1, sh1, sh2))
+##' yNew   = ilogit(xNew)
+##' hist(yNew, n=100, freq=FALSE, xlab="exp(x)")
+##' curve(dbeta(x, sh1, sh2), 0, 1, n=1001, col="red", lwd=3, add=TRUE)
+##'
+##' code = nimbleCode({
+##'   x ~ dLogitBeta(sh1, sh2)
+##' })
+##' const = list(sh1=sh1, sh2=sh2)
+##' modelR = nimbleModel(code=code, const=const)
+##' modelC = compileNimble(modelR)
+##' conf  = configureMCMC(modelC)
+##' mcmc  = buildMCMC(conf=conf)
+##' cMcmc = compileNimble(mcmc)
+##' x = as.vector(runMCMC(mcmc=cMcmc, niter=50000))
+##' par(mfrow=n2mfrow(3))
+##' ## Plot 1: MCMC trajectory
+##' plot(x, typ="l")
+##' ## Plot 2: taget density on unbounded sampling scale
+##' hist(x, n=100, freq=FALSE, xlab="x = logit(y)")
+##' curve(dLogitBeta(x, sh1, sh2), -15, 5, n=1001, col="red", lwd=3, add=TRUE)
+##' ## Plot 3: taget density on bounded scale
+##' hist(ilogit(x), n=100, freq=FALSE, xlab="y")
+##' curve(dbeta(x, sh1, sh2), 0, 1, n=1001, col="red", lwd=3, add=TRUE)
+
+NULL
+
+#' @rdname dLogitBeta
+#' @export
+dLogitBeta <- nimbleFunction (
+    ## Returns density of x where
+    ##                    y ~ Beta(shape1,shape2)
+    ##                    x = logit(y)
+    run = function(x = double(0),
+                   shape1=double(0, default=1.0),
+                   shape2=double(0, default=1.0),
+                   log = integer(0, default=0)) {
+        returnType(double(0))
+        y = ilogit(x)
+        logProbX = log(y) + log(1 - y) + dbeta(y, shape1=shape1, shape2=shape2, log=TRUE) ## Via change of variable
+        if (log)
+            return(logProbX)
+        return(exp(logProbX))
+    }
+)
+
+
+#' @rdname dLogitBeta
+#' @export
+rLogitBeta <- nimbleFunction (
+    ## Generates y ~ Beta(shape1,shape2)
+    ## Returns   x = logit(y)
+    run = function(n = integer(0, default=1),
+                   shape1 = double(0, default=1.0),
+                   shape2 = double(0, default=1.0)) {
+        returnType(double(0))
+        if(n != 1)
+            nimPrint("Warning: rLogitBeta only allows n = 1; Using n = 1.\n")
+        y <- rbeta(1, shape1=shape1, shape2=shape2)
+        x <- logit(y)
+        return(x)
+    }
+)

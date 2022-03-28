@@ -3,7 +3,7 @@
 ##' \code{dLogExp} and \code{rLogExp} provide a log-transformed exponential distribution.
 ##'
 ##' @name dLogExp
-
+##'
 ##' @param x A continuous random varaible on the real line. Let y=exp(x). Then y ~ dexp(rate).
 ##' @param rate Rate parameter of y ~ dexp(rate).
 ##' @param log Logical flag to toggle returning the log density.
@@ -22,7 +22,7 @@
 ##' par(mfrow=n2mfrow(2))
 ##' ## Plot 1
 ##' hist(x, n=100, freq=FALSE)
-##' curve(dLogExp(x, rate=lambda), -15, 4, n=1001, col="red", add=TRUE, lty=3)
+##' curve(dLogExp(x, rate=lambda), -15, 4, n=1001, col="red", add=TRUE, lwd=3)
 ##' ## Plot 2: back-transformed
 ##' xNew = replicate(n=n, rLogExp(n=1, rate=lambda))
 ##' yNew   = exp(xNew)

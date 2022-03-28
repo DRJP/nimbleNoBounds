@@ -10,7 +10,7 @@
 ##'
 ##' @return density or log-density of beta distributions transformed to real line via logit function.
 ##'
-##' @author pleydell
+##' @author David R.J. Pleydell
 ##'
 ##' @examples
 ##'

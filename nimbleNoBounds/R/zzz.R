@@ -34,5 +34,11 @@
     types    = c("value=double(0)"),
     pqAvail  = FALSE)))
 
+  registerDistributions(list(dLogitUnif = list(
+    BUGSdist = "dLogitBeta(min, max)",
+    discrete = FALSE,
+    types    = c("value=double(0)"),
+    pqAvail  = FALSE)))
+
 
 })}

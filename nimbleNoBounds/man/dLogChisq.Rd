@@ -34,12 +34,12 @@ x  = log(y)
 par(mfrow=n2mfrow(2))
 ## Plot 1
 hist(x, n=100, freq=FALSE)
-curve(dLogChisq(x, df=df), -15, 4, n=1001, col="red", add=TRUE, lwd=3)
+curve(dLogChisq(x, df=df), -7, 4, n=1001, col="red", add=TRUE, lwd=3)
 ## Plot 2: back-transformed
 xNew = replicate(n=n, rLogChisq(n=1, df=df))
 yNew = exp(xNew)
 hist(yNew, n=100, freq=FALSE, xlab="exp(x)")
-curve(dchisq(x, df=df), 0, 4, n=1001, col="red", lwd=3, add=TRUE)
+curve(dchisq(x, df=df), 0, 30, n=1001, col="red", lwd=3, add=TRUE)
 
 code = nimbleCode({
   x ~ dLogChisq(df = 0.5)
@@ -55,10 +55,10 @@ par(mfrow=n2mfrow(3))
 plot(x, typ="l")
 ## Plot 2: taget density on unbounded sampling scale
 hist(x, n=100, freq=FALSE)
-curve(dLogChisq(x, df=0.5), -15, 5, n=1001, col="red", lwd=3, add=TRUE)
+curve(dLogChisq(x, df=0.5), -55, 5, n=1001, col="red", lwd=3, add=TRUE)
 ## Plot 3: taget density on bounded scale
 hist(exp(x), n=100, freq=FALSE)
-curve(dchisq(x, df=0.5), 0, 25, n=1001, col="red", lwd=3, add=TRUE)
+curve(dchisq(x, df=0.5), 0, 20, n=1001, col="red", lwd=3, add=TRUE)
 }
 \author{
 David R.J. Pleydell

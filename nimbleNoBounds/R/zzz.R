@@ -59,8 +59,17 @@
       BUGSdist = "dLogChisq(df)",
       discrete = FALSE,
       types    = c("value=double(0)", "df=double(0)"),
-      pqAvail  = FALSE))
-    )
+      pqAvail  = FALSE)))
 
+  registerDistributions(list(
+    dLogInvgamma  = list(
+      ## BUGSdist = 'dLogInvgamma(shape, scale, rate, mean, sd)',
+      BUGSdist = 'dLogInvgamma(shape, scale)',
+      ## altParams= c('rate = 1/scale',
+      ##              'mean = 1 / (rate * (max(shape,1)-1))',
+      ##              'sd = 1 / (rate * (max(shape,1)-1) * sqrt(max(shape,2)-2))'), # max ensures Inf moment when appropriate
+      types    = c("value=double(0)", "shape=double(0)", "scale=double(0)"),
+      ## types    = c("value=double(0)", "shape=double(0)", "scale=double(0)", "rate=double(0)", "mean=double(0)", "sd=double(0)"),
+      pqAvail  = FALSE)))
 
 })}

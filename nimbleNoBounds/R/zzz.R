@@ -40,7 +40,6 @@
     types    = c("value=double(0)", "max=double(0)", "max=double(0)"),
     pqAvail  = FALSE)))
 
-
   registerDistributions(list(
     dLogLnorm = list(
       BUGSdist = "dLogLnorm(meanlog, sdlog)",
@@ -54,6 +53,14 @@
       discrete = FALSE,
       types    = c("value=double(0)"),
       pqAvail  = FALSE)))
+
+  registerDistributions(list(
+    dLogChisq = list(
+      BUGSdist = "dLogChisq(df)",
+      discrete = FALSE,
+      types    = c("value=double(0)", "df=double(0)"),
+      pqAvail  = FALSE))
+    )
 
 
 })}

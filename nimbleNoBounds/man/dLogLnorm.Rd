@@ -29,20 +29,20 @@ The density or log density of x, such that x = log(y) and y ~ dlnorm(meanlog,sdl
 \examples{
 
 n       = 100000
-meanlog = -11
-sdlog   = 6
+meanlog = -3
+sdlog   = 0.1
 y       = rlnorm(n=n, meanlog=meanlog, sdlog=sdlog)
 x       = log(y)
 
 par(mfrow=n2mfrow(2))
 ## Plot 1
 hist(x, n=100, freq=FALSE)
-curve(dLogLnorm(x, meanlog=meanlog, sdlog=sdlog), -40, 15, n=1001, col="red", add=TRUE, lwd=3)
+curve(dLogLnorm(x, meanlog=meanlog, sdlog=sdlog), -4, -2, n=1001, col="red", add=TRUE, lwd=3)
 ## Plot 2: back-transformed
 xNew = replicate(n=n, rLogLnorm(n=1, meanlog=meanlog, sdlog=sdlog))
 yNew   = exp(xNew)
 hist(yNew, n=100, freq=FALSE, xlab="exp(x)")
-curve(dlnorm(x, meanlog=meanlog, sdlog=sdlog), 0, 100, n=1001, col="red", lwd=3, add=TRUE)
+curve(dlnorm(x, meanlog=meanlog, sdlog=sdlog), 0, 0.1, n=1001, col="red", lwd=3, add=TRUE)
 
 code = nimbleCode({
   log(y) ~ dLogLnorm(meanlog=meanlog, sdlog=sdlog)
@@ -59,12 +59,12 @@ y = exp(x)
 par(mfrow=n2mfrow(3))
 ## Plot 1: MCMC trajectory
 plot(x, typ="l")
-## Plot 2: taget density on unbounded sampling sdlog
+## Plot 2: taget density on unbounded sampling scale
 hist(x, n=100, freq=FALSE)
-curve(dLogLnorm(x, meanlog=meanlog, sdlog=sdlog), -4, 3, n=1001, col="red", lwd=3, add=TRUE)
-## Plot 3: taget density on bounded sdlog
+curve(dLogLnorm(x, meanlog=meanlog, sdlog=sdlog), -4, -2, n=1001, col="red", lwd=3, add=TRUE)
+## Plot 3: taget density on bounded scale
 hist(exp(x), n=100, freq=FALSE)
-curve(dlnorm(x, meanlog=meanlog, sdlog=sdlog), 0, 25, n=1001, col="red", lwd=3, add=TRUE)
+curve(dlnorm(x, meanlog=meanlog, sdlog=sdlog), 0, 0.1, n=1001, col="red", lwd=3, add=TRUE)
 }
 \author{
 David R.J. Pleydell

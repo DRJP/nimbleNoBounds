@@ -48,4 +48,12 @@
       types    = c("value=double(0)", "meanlog=double(0)", "sdlog=double(0)"),
       pqAvail  = FALSE)))
 
+  registerDistributions(list(
+    dLogHalfflat = list(
+      BUGSdist = "dLogHalfflat()",
+      discrete = FALSE,
+      types    = c("value=double(0)"),
+      pqAvail  = FALSE)))
+
+
 })}

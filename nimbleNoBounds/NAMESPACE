@@ -2,11 +2,13 @@
 
 export(dLogExp)
 export(dLogGamma)
+export(dLogHalfflat)
 export(dLogLnorm)
 export(dLogitBeta)
 export(dLogitUnif)
 export(rLogExp)
 export(rLogGamma)
+export(rLogHalfflat)
 export(rLogLnorm)
 export(rLogitBeta)
 export(rLogitUnif)

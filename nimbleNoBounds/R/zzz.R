@@ -72,4 +72,10 @@
       ## types    = c("value=double(0)", "shape=double(0)", "scale=double(0)", "rate=double(0)", "mean=double(0)", "sd=double(0)"),
       pqAvail  = FALSE)))
 
+  registerDistributions(list(
+    dLogWeib  = list(
+      BUGSdist = 'dLogWeib(shape, scale)',
+      types    = c("value=double(0)", "shape=double(0)", "scale=double(0)"),
+      pqAvail  = FALSE)))
+
 })}

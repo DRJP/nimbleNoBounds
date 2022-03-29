@@ -13,7 +13,7 @@ vignette: >
 
 <!-- setwd("/home/pleydell/nimbleProject/nimble-snippets/nimbleAPT"); roxygen2::roxygenise() -->
 
-# Introduction
+
 
 This vignette assumes the reader is already familiar with using [nimble](https://r-nimble.org/) to perform Markov chain Monte Carlo (MCMC).
 
@@ -21,8 +21,11 @@ The principal motivation of this package is that bounds on prior distributions c
 In particular, when using Metropolis Hastings, making proposals beyond known bounds, just to have them rejected, will increase rejection rates.
 Moreover, in adaptive Metropolis Hastings, such increased rejection rates will lead to shrinking the Metropolis Hastings kernel, thereby increasing the auto-correlation in the accepted samples and reducing the effective sample size.
 
-This package offers a simple solution to avoid these scenarios. Common bounded probability distributions (beta, unifom, exponential, gamma) are transformed to the unbounded real line via
+This package offers a simple solution to avoid these scenarios.
+Common bounded probability distributions (beta, uniform, exponential, gamma) are transformed (via a change of variables) to the unbounded real line via
 log or logit transformations.
+The resulting distributions are provided for use in nimble models, which may increase MCMC efficiency.
+We explore that claim here with a simple example.
 
 
 ```{r, include = FALSE}
@@ -38,17 +41,19 @@ The following toy problem compares sampling of bounded and unbounded distributio
 
 First, we create nimble models with both classical bounded distributions, and with unbounded transformed equivalents.
 
-```{r model, fig.width=7, fig.height=7}
+```{r model, fig.width=7, fig.height=7, message=FALSE, warning=FALSE}
 library(nimbleNoBounds) # Also loads nimble
+library(coda)           # For MCMC diagnostics
 
-boundedCode <- nimbleCode({
+
+boundedDistributionsModel <- nimbleCode({
   b ~ dbeta(b1, b2)
   u ~ dunif(u1, u2)
   e ~ dexp(e1)
   g ~ dgamma(g1, g2)
 })
 
-unboundedCode <- nimbleCode({
+unboundedDistributionsModel <- nimbleCode({
   timeB ~ dLogitBeta(b1, b2)
   timeU ~ dLogitUnif(u1, u2)
   te ~ dLogExp(e1)
@@ -61,19 +66,18 @@ unboundedCode <- nimbleCode({
 
 const = list(b1=1, b2=11, u1=-6, u2=66, e1=0.1, g1=0.1, g2=10)
 
-rBounded   <- nimbleModel(boundedCode, constants=const)
-rUnbounded <- nimbleModel(unboundedCode, constants=const)
+rBounded   <- nimbleModel(boundedDistributionsModel, constants=const)
+rUnbounded <- nimbleModel(unboundedDistributionsModel, constants=const)
 
 cBounded   <- compileNimble(rBounded)
 cUnbounded <- compileNimble(rUnbounded)
-
 
 ```
 
 Now we perform MCMC using nimble's univariate Metropolis Hastings sampler.
 
 
-```{r fitting1, fig.width=7, fig.height=7}
+```{r fitting, fig.width=7, fig.height=7, eval=FALSE, message=FALSE}
 monitorNodes = c("b","u","e","g")
 
 configureMcmcB = configureMCMC(cBounded,   monitors=monitorNodes)
@@ -108,60 +112,43 @@ for (ii in 1:nReps) {
   ## Extract samples
   samplesB <- as.matrix(cMcmcBounded$mvSamples)
   samplesU <- as.matrix(cMcmcUnbounded$mvSamples)
-  ## Calcualte effective sample size
-  effB = coda::effectiveSize(samplesB)
-  effU = coda::effectiveSize(samplesU)
+  ## Calculate effective sample size
+  effB = effectiveSize(samplesB)
+  effU = effectiveSize(samplesU)
   ## Calculate sampling efficiency
   (efficiencyB = effB / timeB)
   (efficiencyU = effU / timeU)
-  ## Calcyulate efficiency gain
+  ## Calculate efficiency gain
   (efficiencyGain = efficiencyU / efficiencyB)
   gain[ii,] = efficiencyGain
 }
-colnames(gain) = monitorNodes
+colnames(gain) = c("Beta", "Unif", "Exp", "Gamma")  # monitorNodes
 
-boxplot
+## write.csv(gain, file=here::here("data/gain.csv"), row.names = FALSE)
 
 ```
+```{r gain, fig.width=7, fig.height=7, echo=FALSE, message=FALSE}
+## load data gain, to avoid running slow loop above
+data(gain)
+```
 
-As we can see, the default MCMC scheme makes few, if any, jumps between the four potential modes.
-
-So let's try with adaptive parallel tempering (APT).
-
-
-```{r fitting2, fig.width=7, fig.height=7}
-
-conf <- configureMCMC(cModel, nodes="centroids", monitors="centroids", enableWAIC = TRUE)
-conf$removeSamplers()
-conf$addSampler("centroids[1]", type="sampler_RW_tempered", control=list(temperPriors=TRUE))
-conf$addSampler("centroids[2]", type="sampler_RW_tempered", control=list(temperPriors=TRUE))
-conf
-
-aptR <- buildAPT(conf, Temps=1:5, ULT= 1000, print=TRUE)
-
-aptC <- compileNimble(aptR)
-
-aptC$run(niter=15000)
-
-samples <- tail(as.matrix(aptC$mvSamples), 10000)
-summary(samples)
-
-plot(samples, xlab="", ylab="", typ="l", xlim=c(-1,1)*max(cModel$y), ylim=c(-1,1)*max(cModel$y))
-points(samples, col="red", pch=19, cex=0.1)
-legend("topleft", legend=c("jumps", "samples"), col=c("black","red"), pch=c("_","X"), bg="white")
-
-plot(as.mcmc(samples))
-
-plot(as.mcmc(aptC$logProbs))
-
-aptC$calculateWAIC()
+Finally, some boxplots of the efficiency gain per distribution, with mean and 95% CIs.
+```{r plotting, fig.width=7, fig.height=7, message=FALSE}
+boxplot(log10(gain), ylab="log10 Efficiency Gain")
+abline(h=0)
+text(1, 1, paste("x", signif(mean(gain[,"Beta"]), 3)))
+text(1, 0.8, paste0("(", paste(signif(quantile(gain[,"Beta"], c(0.025, 0.975)), 3), collapse=" - "), ")"))
+text(2, 1, paste("x", signif(mean(gain[,"Unif"]), 3)))
+text(2, 0.8, paste0("(", paste(signif(quantile(gain[,"Unif"], c(0.025, 0.975)), 3), collapse=" - "), ")"))
+text(3, 1, paste("x", signif(mean(gain[,"Exp"]), 3)))
+text(3, 0.8, paste0("(", paste(signif(quantile(gain[,"Exp"], c(0.025, 0.975)), 3), collapse=" - "), ")"))
+text(4, 1, paste("x", signif(mean(gain[,"Gamma"]), 3)))
+text(4, 0.8, paste0("(", paste(signif(quantile(gain[,"Gamma"], c(0.025, 0.975)), 3), collapse=" - "), ")"))
 
 
 ```
 
-We can see that jumps between nodes (black lines) are frequent and that each node has been sampled (red points).
-The precision with which the weight of each posterior mode is estimated can be increased by increasing
-1. the number of rungs in the temperature ladder, and moreover
-2. the number of iterations (niter).
-
-Finally, note that WAIC can be computed in exactly the same way as in nimble. See the section 'calculating WAIC' in the nimble manual for further details.
+These results show that:
+1. large efficiency gains can be obtained from sampling on the real line.
+2. the size of the efficiency gain depends on the target distribution being sampled.
+3. computational overhead arising from the transformations is negligable compared to potential efficiency gain from sampling on the unbounded real line.

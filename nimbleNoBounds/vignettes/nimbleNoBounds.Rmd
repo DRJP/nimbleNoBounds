@@ -1,13 +1,11 @@
 ---
-title: "A quick guide to nimbleNoBounds"
+title: "A quick guide to `nimbleNoBounds`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{A quick guide to nimbleNoBounds}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
-
 
 <!-- Add this vignette to the documentation via roxygen2::roxygenise() and  R CMD build -->
 
@@ -18,14 +16,40 @@ vignette: >
 This vignette assumes the reader is already familiar with using [nimble](https://r-nimble.org/) to perform Markov chain Monte Carlo (MCMC).
 
 The principal motivation of this package is that bounds on prior distributions can impair MCMC performance when posterior distributions are located close to those bounds.
-In particular, when using Metropolis Hastings, making proposals beyond known bounds, just to have them rejected, will increase rejection rates.
-Moreover, in adaptive Metropolis Hastings, such increased rejection rates will lead to shrinking the Metropolis Hastings kernel, thereby increasing the auto-correlation in the accepted samples and reducing the effective sample size.
+In particular, when using Metropolis-Hastings, proposals made beyond the known bounds of a distribution will inflate rejection rates.
+Moreover, in adaptive Metropolis-Hastings, such increased rejection rates will lead to shrinking the Metropolis-Hastings kernel,
+thereby increasing the auto-correlation in the accepted samples and reducing the effective sample size.
+
 
 This package offers a simple solution to avoid these scenarios.
-Common bounded probability distributions (beta, uniform, exponential, gamma) are transformed (via a change of variables) to the unbounded real line via
-log or logit transformations.
-The resulting distributions are provided for use in nimble models, which may increase MCMC efficiency.
-We explore that claim here with a simple example.
+Common bounded probability distributions (beta, uniform, exponential, gamma, chi-squared, half-flat, inverse-gamma, log-normal, weibull)
+are transformed, via log or logit transformations, to the unbounded real line.
+The change of variables technique is used to obtain the transformed distribution.
+The resulting distributions are provided here for use in nimble models.
+__Sampling on the unbounded real line may increase MCMC efficiency.__
+We explore that claim below with a series of simple examples.
+
+# Distributions included in `nimbleNoBounds`
+
+The following transformed distributions are available.
+
+| Function       | Transform | Distribution  | Corresponding R function |
+|----------------|-----------|---------------|--------------------------|
+| `dLogChisq`    | Log       | Chi-squared   | `dchisq`                 |
+| `dLogExp`      | Log       | Exponential   | `dexp`                   |
+| `dLogGamma`    | Log       | Gamma         | `dgamma`                 |
+| `dLogHalfflat` | Log       | Half-flat     | `dhalfflat`              |
+| `dLogInvgamma` | Log       | Inverse-gamma | `dinvgamma`              |
+| `dLogLnorm`    | Log       | Log-normal    | `dlnorm`                 |
+| `dLogWeib`     | Log       | Weibull       | `dweib`                  |
+| `dLogitBeta`   | Logit     | Beta          | `dbeta`                  |
+| `dLogitUnif`   | Logit     | Uniform       | `dunif`                  |
+
+Note: the naming convention is `d[Transform][Distribution]`.
+Only `d` and `r` functions have been provided.
+I do not plan to add `p` or `q` functions, but am open to collaboration if somebody else is motivated to add them.
+
+
 
 
 ```{r, include = FALSE}
@@ -47,59 +71,87 @@ library(coda)           # For MCMC diagnostics
 
 
 boundedDistributionsModel <- nimbleCode({
-  b ~ dbeta(b1, b2)
-  u ~ dunif(u1, u2)
-  e ~ dexp(e1)
-  g ~ dgamma(g1, g2)
+  b  ~ dbeta(b1, b2)
+  c  ~ dchisq(c1)
+  e  ~ dexp(e1)
+  g  ~ dgamma(g1, g2)
+  ig ~ dinvgamma(i1, i2)
+  l  ~ dlnorm(l1, l2)
+  u  ~ dunif(u1, u2)
+  w  ~ dweib(w1, w2)
 })
 
 unboundedDistributionsModel <- nimbleCode({
-  timeB ~ dLogitBeta(b1, b2)
-  timeU ~ dLogitUnif(u1, u2)
-  te ~ dLogExp(e1)
-  tg ~ dLogGamma(g1, g2)
-  b <- ilogit(timeB)
-  u <- (u2*exp(timeU)+u1)/(u2-u1)
-  e <- exp(te)
-  g <- exp(tg)
+  ## Priors transformed to real line
+  tb  ~ dLogitBeta(b1, b2)
+  tc  ~ dLogChisq(c1)
+  te  ~ dLogExp(e1)
+  tg  ~ dLogGamma(g1, g2)
+  tig ~ dLogInvgamma(i1, i2)
+  tl  ~ dLogLnorm(l1, l2)
+  tu  ~ dLogitUnif(u1, u2)
+  tw  ~ dLogWeib(w1, w2)
+  ## Back-transformations
+  b  <- ilogit(tb)
+  c  <- exp(tc)
+  e  <- exp(te)
+  g  <- exp(tg)
+  ig <- exp(tig) ## NIMBLE bug??? Doesn't compile if I call this node i
+  l  <- exp(tl)
+  u  <- (u2*exp(tu)+u1)/(u2-u1)
+  w  <- exp(tw)
 })
 
-const = list(b1=1, b2=11, u1=-6, u2=66, e1=0.1, g1=0.1, g2=10)
+const = list(         ## Lisr of (fixed) parameters
+  b1=1   , b2=11,     ## Beta
+  c1=2   ,            ## Chi-squared
+  i1=2.5 , i2=0.01,   ## Inverse-gamma
+  u1=-6  , u2=66,     ## Uniform
+  e1=0.1 ,            ## Exponential
+  g1=0.1 , g2=10,     ## Gamma
+  l1=-3  , l2=0.1,    ## Log-normal
+  w1=2   , w2=2       ## Weibull
+)
 
 rBounded   <- nimbleModel(boundedDistributionsModel, constants=const)
 rUnbounded <- nimbleModel(unboundedDistributionsModel, constants=const)
 
 cBounded   <- compileNimble(rBounded)
-cUnbounded <- compileNimble(rUnbounded)
+cUnbounded <- compileNimble(rUnbounded, showCompilerOutput = TRUE)
 
 ```
 
 Now we perform MCMC using nimble's univariate Metropolis Hastings sampler.
+We use `B` to indicate _bounded_ and `U` to indicate _unbounded_.
 
 
 ```{r fitting, fig.width=7, fig.height=7, eval=FALSE, message=FALSE}
-monitorNodes = c("b","u","e","g")
+## Lists of nodes
+stochNodesB  = rBounded$getNodeNames(stochOnly=TRUE)
+stochNodesU  = rUnbounded$getNodeNames(stochOnly=TRUE)
+monitorNodes = stochNodesB
 
+## Configure an MCMC for each model
 configureMcmcB = configureMCMC(cBounded,   monitors=monitorNodes)
 configureMcmcU = configureMCMC(cUnbounded, monitors=monitorNodes)
 
+## Remove posterior predictive samplers & replace with univariate Metropolis-Hastings
 configureMcmcB$removeSamplers()
-configureMcmcB$addSampler("b")
-configureMcmcB$addSampler("u")
-configureMcmcB$addSampler("e")
-configureMcmcB$addSampler("g")
-
 configureMcmcU$removeSamplers()
-configureMcmcU$addSampler("tb")
-configureMcmcU$addSampler("tu")
-configureMcmcU$addSampler("te")
-configureMcmcU$addSampler("tg")
+for (nd in stochNodesB)
+  configureMcmcB$addSampler(nd)
+for (nd in stochNodesU)
+  configureMcmcU$addSampler(nd)
+print(configureMcmcB)
+print(configureMcmcU)
 
-rMcmcBounded   <- buildMCMC(configureMcmcB)
-rMcmcUnbounded <- buildMCMC(configureMcmcU)
+## Build & compile the MCMCs
+rMcmcB <- buildMCMC(configureMcmcB)
+rMcmcU <- buildMCMC(configureMcmcU)
 
-cMcmcBounded   <- compileNimble(rMcmcBounded)
-cMcmcUnbounded <- compileNimble(rMcmcUnbounded)
+cMcmcB <- compileNimble(rMcmcB)
+cMcmcU <- compileNimble(rMcmcU)
+
 
 nReps = 10
 gain = matrix(0, ncol=length(monitorNodes), nrow=nReps)
@@ -107,14 +159,17 @@ for (ii in 1:nReps) {
   if (ii %% 10 == 0)
     print(ii)
   ## Run MCMC
-  timeB = system.time(cMcmcBounded$run(niter=1E6))["elapsed"]
-  timeU = system.time(cMcmcUnbounded$run(niter=1E6))["elapsed"]
+  stimeB = system.time(cMcmcB$run(niter=1E6, time = TRUE))["elapsed"]
+  stimeU = system.time(cMcmcU$run(niter=1E6, time = TRUE))["elapsed"]
   ## Extract samples
-  samplesB <- as.matrix(cMcmcBounded$mvSamples)
-  samplesU <- as.matrix(cMcmcUnbounded$mvSamples)
+  samplesB = as.matrix(cMcmcB$mvSamples)
+  samplesU = as.matrix(cMcmcU$mvSamples)
   ## Calculate effective sample size
   effB = effectiveSize(samplesB)
   effU = effectiveSize(samplesU)
+  ## Time spent in each sampler
+  timeB = cMcmcB$getTimes()
+  timeU = cMcmcU$getTimes()
   ## Calculate sampling efficiency
   (efficiencyB = effB / timeB)
   (efficiencyU = effU / timeU)

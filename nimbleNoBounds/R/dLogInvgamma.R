@@ -11,6 +11,7 @@
 ##' @param n Number of random variables. Currently limited to 1, as is common in nimble. See ?replicate for an alternative.
 ##' @import nimble
 ##' @importFrom stats rgamma runif dgamma
+##' @importFrom nimble dinvgamma
 ##'
 ##' @return The density or log density of x, such that x = log(y) and y ~ dinvgamma(shape,scale).
 ##' @author David R.J. Pleydell

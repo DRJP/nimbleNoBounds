@@ -70,8 +70,9 @@ plot(x, typ="l")
 hist(x, n=100, freq=FALSE)
 curve(dLogInvgamma(x, shape=shape, scale=scale), -10, 1, n=1001, col="red", lwd=3, add=TRUE)
 ## Plot 3: taget density on bounded scale
-hist(exp(x), n=100, freq=FALSE)
-curve(dinvgamma(x, shape=shape, scale=scale), 0, 25, n=1001, col="red", lwd=3, add=TRUE)
+curve(dinvgamma(x, shape=shape, scale=scale), xlab="y = exp(x)", 0, 0.5, n=1001, col="red", lwd=3)
+hist(exp(x), n=100, freq=FALSE, add=TRUE)
+curve(dinvgamma(x, shape=shape, scale=scale), 0, 0.5, n=1001, col="red", add=TRUE, lwd=3)
 }
 \author{
 David R.J. Pleydell

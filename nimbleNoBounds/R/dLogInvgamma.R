@@ -57,7 +57,7 @@
 ##' hist(x, n=100, freq=FALSE)
 ##' curve(dLogInvgamma(x, shape=shape, scale=scale), -10, 1, n=1001, col="red", lwd=3, add=TRUE)
 ##' ## Plot 3: taget density on bounded scale
-##' curve(dinvgamma(x, shape=shape, scale=scale), 0, 0.5, n=1001, col="red", lwd=3)
+##' curve(dinvgamma(x, shape=shape, scale=scale), xlab="y = exp(x)", 0, 0.5, n=1001, col="red", lwd=3)
 ##' hist(exp(x), n=100, freq=FALSE, add=TRUE)
 ##' curve(dinvgamma(x, shape=shape, scale=scale), 0, 0.5, n=1001, col="red", add=TRUE, lwd=3)
 

@@ -10,6 +10,7 @@
 ##' @param log Logical flag to toggle returning the log density.
 ##' @param n Number of random variables. Currently limited to 1, as is common in nimble. See ?replicate for an alternative.
 ##' @import nimble
+##' @importFrom stats rgamma runif dgamma
 ##'
 ##' @return The density or log density of x, such that x = log(y) and y ~ dinvgamma(shape,scale).
 ##' @author David R.J. Pleydell

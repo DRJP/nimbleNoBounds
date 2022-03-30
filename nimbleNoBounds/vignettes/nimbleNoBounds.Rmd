@@ -69,7 +69,7 @@ First, we create nimble models with both classical bounded distributions, and wi
 library(nimbleNoBounds) # Also loads nimble
 library(coda)           # For MCMC diagnostics
 
-
+## Model with bounded priors
 boundedDistributionsModel <- nimbleCode({
   b  ~ dbeta(b1, b2)
   c  ~ dchisq(c1)
@@ -81,6 +81,7 @@ boundedDistributionsModel <- nimbleCode({
   w  ~ dweib(w1, w2)
 })
 
+## Model with unbounded priors
 unboundedDistributionsModel <- nimbleCode({
   ## Priors transformed to real line
   tb  ~ dLogitBeta(b1, b2)
@@ -102,7 +103,8 @@ unboundedDistributionsModel <- nimbleCode({
   w  <- exp(tw)
 })
 
-const = list(         ## Lisr of (fixed) parameters
+## List of (fixed) parameters
+const = list(
   b1=1   , b2=11,     ## Beta
   c1=2   ,            ## Chi-squared
   i1=2.5 , i2=0.01,   ## Inverse-gamma
@@ -113,12 +115,17 @@ const = list(         ## Lisr of (fixed) parameters
   w1=2   , w2=2       ## Weibull
 )
 
+## Build and compie models
 rBounded   <- nimbleModel(boundedDistributionsModel, constants=const)
 rUnbounded <- nimbleModel(unboundedDistributionsModel, constants=const)
-
 cBounded   <- compileNimble(rBounded)
 cUnbounded <- compileNimble(rUnbounded)
 
+## Lists of nodes
+stochNodesB   = rBounded$getNodeNames(stochOnly=TRUE)
+stochNodesU   = rUnbounded$getNodeNames(stochOnly=TRUE)
+monitorNodes  = stochNodesB
+distributions = substring(rBounded$getDistribution(monitorNodes), 2, 99)
 ```
 
 Now we perform MCMC using nimble's univariate Metropolis Hastings sampler.
@@ -129,12 +136,6 @@ _Efficiency_ is calculated as the ratio of effective sample size divided by time
 The efficiency _gain_ is the calculated as the ratio (unbounded over bounded) of the efficiencies.
 
 ```{r fitting, eval=FALSE, message=FALSE}
-## Lists of nodes
-stochNodesB   = rBounded$getNodeNames(stochOnly=TRUE)
-stochNodesU   = rUnbounded$getNodeNames(stochOnly=TRUE)
-monitorNodes  = stochNodesB
-distributions = substring(rBounded$getDistribution(monitorNodes), 2, 99)
-
 ## Configure an MCMC for each model
 configureMcmcB = configureMCMC(cBounded,   monitors=monitorNodes)
 configureMcmcU = configureMCMC(cUnbounded, monitors=monitorNodes)
@@ -154,7 +155,7 @@ cMcmcB <- compileNimble(rMcmcB)
 cMcmcU <- compileNimble(rMcmcU)
 
 ## The following loop takes approximately 10 minutes.
-## You can optionally skip running the loop and load the data object `efficiencyGain` from the package.
+## You can optionally skip running the loop and load the data object efficiencyGain from the package.
 ## Or simply just reduce nSamples and nReps.
 runLoop = FALSE
 if (runLoop) {
@@ -182,16 +183,16 @@ if (runLoop) {
     (efficiencyGain[ii,] = efficiencyU / efficiencyB)
   }
   colnames(efficiencyGain) = distributions
-  ## write.table(efficiencyGain, file=here::here("data/efficiencyGain.csv"), sep=";", row.names = FALSE)
-  ## save(efficiencyGain, file=here::here("data/efficiencyGain.Rdata"))
-} else {
-  data(efficiencyGain)
+  ## write.table(efficiencyGain, file=here::here("nimbleNoBounds/data/efficiencyGain.csv"), sep=";", row.names = FALSE)
+  ## save(efficiencyGain, file=here::here("nimbleNoBounds/data/efficiencyGain.rda"))
 }
 ```
 
 Finally, some boxplots of the efficiency gain per distribution, annotated with the with mean and 95% CIs.
 
 ```{r plotting, fig.width=7, fig.height=4, message=FALSE}
+data(efficiencyGain, package="nimbleNoBounds")
+
 boxplot(log10(efficiencyGain), ylab="log10 Efficiency Gain", ylim=c(-1, 4))
 abline(h=0)
 for (ii in 1:length(distributions)) {

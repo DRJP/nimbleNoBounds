@@ -10,7 +10,7 @@ dLogExp(x, rate = 1, log = 0)
 rLogExp(n = 1, rate = 1)
 }
 \arguments{
-\item{x}{A continuous random varaible on the real line. Let y=exp(x). Then y ~ dexp(rate).}
+\item{x}{A continuous random variable on the real line. Let y=exp(x). Then y ~ dexp(rate).}
 
 \item{rate}{Rate parameter of y ~ dexp(rate).}
 

@@ -10,7 +10,7 @@ dLogLnorm(x, meanlog = 1, sdlog = 1, log = 0)
 rLogLnorm(n = 1, meanlog = 1, sdlog = 1)
 }
 \arguments{
-\item{x}{A continuous random varaible on the real line. Let y=exp(x). Then y ~ dlnorm(meanlog, sdlog).}
+\item{x}{A continuous random variable on the real line. Let y=exp(x). Then y ~ dlnorm(meanlog, sdlog).}
 
 \item{meanlog}{mean of the distribution on the log scale with default values of ‘0’.}
 

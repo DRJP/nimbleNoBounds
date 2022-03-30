@@ -10,7 +10,7 @@ dLogitUnif(x, min = 0, max = 1, log = 0)
 rLogitUnif(n = 1, min = 0, max = 1)
 }
 \arguments{
-\item{x}{A continuous random varaible on the real line, where y=ilogit(x)*(max-min)+min and y ~ dunif(min, max).}
+\item{x}{A continuous random variable on the real line, where y=ilogit(x)*(max-min)+min and y ~ dunif(min, max).}
 
 \item{min}{lower limit of the distribution.  Must be finite.}
 

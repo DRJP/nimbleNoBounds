@@ -23,7 +23,8 @@
 ##'
 ##' par(mfrow=n2mfrow(2))
 ##' ## Plot 1
-##' hist(x, n=100, freq=FALSE, xlab="x = log(y)", main="Histogram of log-transformed random numbers from rweibull.")
+##' hist(x, n=100, freq=FALSE, xlab="x = log(y)",
+##'      main="Histogram of log-transformed random numbers from rweibull.")
 ##' curve(dLogWeib(x, shape=shape, scale=scale), -6, 3, n=1001, col="red", add=TRUE, lwd=3)
 ##' ## Plot 2: back-transformed
 ##' xNew = replicate(n=n, rLogWeib(n=1, shape=shape, scale=scale))
@@ -50,7 +51,8 @@
 ##' hist(x, n=100, freq=FALSE, main="Histogram of MCMC samples", xlab="x = log(y)")
 ##' curve(dLogWeib(x, shape=shape, scale=scale), -5, 3, n=1001, col="red", lwd=3, add=TRUE)
 ##' ## Plot 3: taget density on bounded scale
-##' hist(exp(x), n=100, freq=FALSE, main="Histogram of back-transformed MCMC samples", xlab="y = exp(x)")
+##' hist(exp(x), n=100, freq=FALSE, xlab="y = exp(x)",
+##'      main="Histogram of back-transformed MCMC samples")
 ##' curve(dweibull(x, shape=shape, scale=scale), 0, 8, n=1001, col="red", lwd=3, add=TRUE)
 
 NULL

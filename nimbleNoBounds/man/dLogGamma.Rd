@@ -10,7 +10,7 @@ dLogGamma(x, shape = 1, scale = 1, log = 0)
 rLogGamma(n = 1, shape = 1, scale = 1)
 }
 \arguments{
-\item{x}{A continuous random varaible on the real line. Let y=exp(x). Then y ~ dgamma(shape,scale).}
+\item{x}{A continuous random variable on the real line. Let y=exp(x). Then y ~ dgamma(shape,scale).}
 
 \item{shape}{Shape parameter of y ~ dgamma(shape,scale).}
 

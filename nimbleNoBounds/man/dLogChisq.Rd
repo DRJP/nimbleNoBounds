@@ -10,7 +10,7 @@ dLogChisq(x, df = 1, log = 0)
 rLogChisq(n = 1, df = 1)
 }
 \arguments{
-\item{x}{A continuous random varaible on the real line, where y=exp(x) and y ~ dchsq(df).}
+\item{x}{A continuous random variable on the real line, where y=exp(x) and y ~ dchsq(df).}
 
 \item{df}{df parameter of y ~ dchisq(df).}
 
@@ -57,7 +57,7 @@ plot(x, typ="l")
 hist(x, n=100, freq=FALSE, main="Histogram of MCMC samples", xlab="x = log(y)")
 curve(dLogChisq(x, df=0.5), -55, 5, n=1001, col="red", lwd=3, add=TRUE)
 ## Plot 3: taget density on bounded scale
-hist(exp(x), n=100, freq=FALSE, main="Histogram of back-transformed MCMC samples", xlab="y = exp(x)")
+hist(exp(x), n=100, freq=FALSE, xlab="y = exp(x)", main="Back-transformed MCMC samples")
 curve(dchisq(x, df=0.5), 0, 20, n=1001, col="red", lwd=3, add=TRUE)
 }
 \author{

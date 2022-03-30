@@ -10,7 +10,7 @@ dLogitBeta(x, shape1 = 1, shape2 = 1, log = 0)
 rLogitBeta(n = 1, shape1 = 1, shape2 = 1)
 }
 \arguments{
-\item{x}{A continuous random varaible on the real line, where y=ilogit(x) and y ~ dbeta(shape1, shape2).}
+\item{x}{A continuous random variable on the real line, where y=ilogit(x) and y ~ dbeta(shape1, shape2).}
 
 \item{shape1}{non-negative parameter of the Beta distribution.}
 

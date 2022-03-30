@@ -10,7 +10,7 @@ dLogInvgamma(x, shape, scale = 1, log = 0)
 rLogInvgamma(n = 1, shape, scale = 1)
 }
 \arguments{
-\item{x}{A continuous random varaible on the real line. Let y=exp(x). Then y ~ dinvgamma(shape,scale).}
+\item{x}{A continuous random variable on the real line. Let y=exp(x). Then y ~ dinvgamma(shape,scale).}
 
 \item{shape}{Shape parameter of y ~ dinvgamma(shape,scale).}
 
@@ -46,8 +46,8 @@ z = rgamma(n=n, shape=shape, scale=1/scale)
 hist(1/z, n=100, freq=FALSE, xlab="y")
 curve(dinvgamma(x, shape=shape, scale=scale), 0, 1, n=5001, col="red", lwd=3, add=TRUE)
 ## Plot 4: back-transformed
-xNew = replicate(n=n, rLogInvgamma(n=1, shape=shape, scale=scale)) ## yNew = replicate(n=n, rinvgamma(n=1, shape=shape, scale=scale))
-yNew   = exp(xNew)
+xNew = replicate(n=n, rLogInvgamma(n=1, shape=shape, scale=scale))
+yNew = exp(xNew)
 hist(yNew, n=100, freq=FALSE, xlab="exp(x)")
 curve(dinvgamma(x, shape=shape, scale=scale), 0, 1, n=5001, col="red", lwd=3, add=TRUE)
 

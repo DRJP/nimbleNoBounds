@@ -35,8 +35,8 @@
 ##' hist(1/z, n=100, freq=FALSE, xlab="y")
 ##' curve(dinvgamma(x, shape=shape, scale=scale), 0, 1, n=5001, col="red", lwd=3, add=TRUE)
 ##' ## Plot 4: back-transformed
-##' xNew = replicate(n=n, rLogInvgamma(n=1, shape=shape, scale=scale)) ## yNew = replicate(n=n, rinvgamma(n=1, shape=shape, scale=scale))
-##' yNew   = exp(xNew)
+##' xNew = replicate(n=n, rLogInvgamma(n=1, shape=shape, scale=scale))
+##' yNew = exp(xNew)
 ##' hist(yNew, n=100, freq=FALSE, xlab="exp(x)")
 ##' curve(dinvgamma(x, shape=shape, scale=scale), 0, 1, n=5001, col="red", lwd=3, add=TRUE)
 ##'

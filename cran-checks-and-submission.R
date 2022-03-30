@@ -5,7 +5,7 @@
 ## Tests the package can build and install on various platforms
 library(rhub)
 library(here)
-setwd(here::here("nimbleChangeOfVariables"))
+setwd(here::here("nimbleNoBounds"))
 getwd()
 
 rhub::check()
@@ -42,6 +42,8 @@ devtools::check()
 res  = rhub::check(platform="ubuntu-gcc-release")
 #res2 = rhub::check(platform="ubuntu-gcc-devel")
 ## SUGGESTS IT'S AN EIGEN or RHUB PROBLEM
+## It is an Rhub problem!!!
+## https://github.com/r-hub/rhub/issues/448#issuecomment-1009922117
 ##
 ## 13h48ish ran command - 13h4
 res$cran_summary()

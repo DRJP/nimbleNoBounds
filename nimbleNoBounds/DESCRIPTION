@@ -1,12 +1,12 @@
 Package: nimbleNoBounds
 Type: Package
-Title: Common univariate probability distributions transformed to the (unbounded) real line.
+Title: Common univariate probability distributions transformed to the (unbounded) real line
 Version: 1.0.0
 Encoding: UTF-8
 Date: 2022-03-25
 Maintainer: David Pleydell <david.pleydell@inrae.fr>
 Author: person("David", "Pleydell", email="david.pleydell@inrae.fr", role=c("aut","cre","cph"), comment = c("Package developer", ORCID = "0000-0002-6450-1475"))
-URL: https://github.com/DRJP/nimbleChangeOfVariables
+URL: https://github.com/DRJP/nimbleNoBounds
 Description: A collection of common univariate bounded probability distributions transformed to the unbounded real line, for the purpose of increased MCMC efficiency.
 License: BSD_3_clause + file LICENSE
 Copyright: See COPYRIGHTS file.

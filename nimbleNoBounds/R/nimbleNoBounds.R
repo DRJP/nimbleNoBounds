@@ -5,6 +5,7 @@
 #' @name nimbleNoBoundss
 #' @section Transformed probability distributions for unbounded sampling in nimble.
 #'
+#' @import methods
 #' @seealso \url{https://r-nimble.org/}
 #' @docType package
 ## #' @import nimble

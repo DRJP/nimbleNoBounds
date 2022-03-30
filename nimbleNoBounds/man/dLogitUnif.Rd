@@ -17,6 +17,8 @@ rLogitUnif(n = 1, min = 0, max = 1)
 \item{max}{upper limit of the distribution.  Must be finite.}
 
 \item{log}{logical flag. Returns log-density if TRUE.}
+
+\item{n}{Number of random variables. Currently limited to 1, as is common in nimble. See ?replicate for an alternative.}
 }
 \value{
 density, or log-density, of uniform distribution transformed to real line via scaling and logit function.

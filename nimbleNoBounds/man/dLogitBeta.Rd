@@ -17,6 +17,8 @@ rLogitBeta(n = 1, shape1 = 1, shape2 = 1)
 \item{shape2}{non-negative parameter of the Beta distribution.}
 
 \item{log}{logical flag. Returns log-density if TRUE.}
+
+\item{n}{Number of random variables. Currently limited to 1, as is common in nimble. See ?replicate for an alternative.}
 }
 \value{
 density or log-density of beta distributions transformed to real line via logit function.

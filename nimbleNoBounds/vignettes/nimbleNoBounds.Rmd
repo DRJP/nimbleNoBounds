@@ -115,7 +115,7 @@ const = list(
   w1=2   , w2=2       ## Weibull
 )
 
-## Build and compie models
+## Build and compile models
 rBounded   <- nimbleModel(boundedDistributionsModel, constants=const)
 rUnbounded <- nimbleModel(unboundedDistributionsModel, constants=const)
 cBounded   <- compileNimble(rBounded)
@@ -188,21 +188,22 @@ if (runLoop) {
 }
 ```
 
-Finally, some boxplots of the efficiency gain per distribution, annotated with the with mean and 95% CIs.
+Finally, some box-plots of the efficiency gain per distribution, annotated with the with mean and 95% CIs.
 
-```{r plotting, fig.width=7, fig.height=4, message=FALSE}
+```{r plotting, fig.width=9, fig.height=7, message=FALSE}
 data(efficiencyGain, package="nimbleNoBounds")
 
 boxplot(log10(efficiencyGain), ylab="log10 Efficiency Gain", ylim=c(-1, 4))
 abline(h=0)
 for (ii in 1:length(distributions)) {
   text(ii, -0.7, paste("x", signif(mean(efficiencyGain[,distributions[ii]]), 3)))
-  text(ii, -0.9, paste0("(", paste(signif(quantile(efficiencyGain[,distributions[ii]], c(0.025, 0.975)), 3), collapse=" - "), ")"))
+  text(ii, -0.9, paste0("(", paste(signif(quantile(efficiencyGain[,distributions[ii]], c(0.025, 0.975)), 3), collapse=" - "), ")"), cex=0.7)
 }
 
 ```
 
 These results show that:
+
 1. large efficiency gains can be obtained from sampling on the real line.
 2. the size of the efficiency gain depends on the target distribution being sampled.
-3. computational overhead arising from the transformations is negligable compared to potential efficiency efficiencyGain from sampling on the unbounded real line.
+3. computational overhead arising from the transformations is negligible compared to potential efficiency gain from sampling on the unbounded real line.

@@ -4,7 +4,7 @@
 ##'
 ##' @name dLogWeib
 
-##' @param x A continuous random varaible on the real line, where y=exp(x) and y ~ dweib(shape,scale).
+##' @param x A continuous random variable on the real line, where y=exp(x) and y ~ dweib(shape,scale).
 ##' @param shape Shape parameter of y ~ dweib(shape,scale).
 ##' @param scale Scale parameter of y ~ dweib(shape,scale).
 ##' @param log Logical flag to toggle returning the log density.

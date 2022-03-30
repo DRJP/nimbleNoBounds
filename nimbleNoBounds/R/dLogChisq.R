@@ -4,7 +4,7 @@
 ##'
 ##' @name dLogChisq
 ##'
-##' @param x A continuous random varaible on the real line, where y=exp(x) and y ~ dchsq(df).
+##' @param x A continuous random variable on the real line, where y=exp(x) and y ~ dchsq(df).
 ##' @param df df parameter of y ~ dchisq(df).
 ##' @param log Logical flag to toggle returning the log density.
 ##' @param n Number of random variables. Currently limited to 1, as is common in nimble. See ?replicate for an alternative.

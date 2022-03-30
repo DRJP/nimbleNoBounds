@@ -4,7 +4,7 @@
 ##'
 ##' @name dLogExp
 ##'
-##' @param x A continuous random varaible on the real line. Let y=exp(x). Then y ~ dexp(rate).
+##' @param x A continuous random variable on the real line. Let y=exp(x). Then y ~ dexp(rate).
 ##' @param rate Rate parameter of y ~ dexp(rate).
 ##' @param log Logical flag to toggle returning the log density.
 ##' @param n Number of random variables. Currently limited to 1, as is common in nimble. See ?replicate for an alternative.

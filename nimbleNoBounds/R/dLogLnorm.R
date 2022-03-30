@@ -4,7 +4,7 @@
 ##'
 ##' @name dLogLnorm
 ##'
-##' @param x A continuous random varaible on the real line. Let y=exp(x). Then y ~ dlnorm(meanlog, sdlog).
+##' @param x A continuous random variable on the real line. Let y=exp(x). Then y ~ dlnorm(meanlog, sdlog).
 ##' @param meanlog mean of the distribution on the log scale with default values of ‘0’.
 ##' @param sdlog standard deviation of the distribution on the log scale with default values of ‘1’.
 ##' @param log Logical flag to toggle returning the log density.

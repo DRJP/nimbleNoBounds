@@ -3,14 +3,17 @@
 ##' Logit transformation of beta random variable to the real line.
 ##' @name dLogitBeta
 ##'
-##' @param x A continuous random varaible on the real line, where y=ilogit(x) and y ~ dbeta(shape1, shape2).
+##' @param x A continuous random variable on the real line, where y=ilogit(x) and y ~ dbeta(shape1, shape2).
 ##' @param shape1 non-negative parameter of the Beta distribution.
 ##' @param shape2 non-negative parameter of the Beta distribution.
 ##' @param log    logical flag. Returns log-density if TRUE.
+##' @param n Number of random variables. Currently limited to 1, as is common in nimble. See ?replicate for an alternative.
 ##'
 ##' @return density or log-density of beta distributions transformed to real line via logit function.
 ##'
 ##' @author David R.J. Pleydell
+##' @importFrom stats dbeta rbeta
+
 ##'
 ##' @examples
 ##'

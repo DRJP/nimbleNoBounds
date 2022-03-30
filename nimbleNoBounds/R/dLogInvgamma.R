@@ -4,7 +4,7 @@
 ##'
 ##' @name dLogInvgamma
 
-##' @param x A continuous random varaible on the real line. Let y=exp(x). Then y ~ dinvgamma(shape,scale).
+##' @param x A continuous random variable on the real line. Let y=exp(x). Then y ~ dinvgamma(shape,scale).
 ##' @param shape Shape parameter of y ~ dinvgamma(shape,scale).
 ##' @param scale Scale parameter of y ~ dinvgamma(shape,scale).
 ##' @param log Logical flag to toggle returning the log density.

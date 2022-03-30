@@ -4,13 +4,13 @@
 ##'
 ##' @name dLogGamma
 
-##' @param x A continuous random varaible on the real line. Let y=exp(x). Then y ~ dgamma(shape,scale).
+##' @param x A continuous random variable on the real line. Let y=exp(x). Then y ~ dgamma(shape,scale).
 ##' @param shape Shape parameter of y ~ dgamma(shape,scale).
 ##' @param scale Scale parameter of y ~ dgamma(shape,scale).
 ##' @param log Logical flag to toggle returning the log density.
 ##' @param n Number of random variables. Currently limited to 1, as is common in nimble. See ?replicate for an alternative.
 ##' @import nimble
-##' @importFrom stats rgamma runif dgamma
+##' @importFrom stats rgamma dgamma
 ##' @return The density or log density of x, such that x = log(y) and y ~ dgamma(shape,scale).
 ##' @author David R.J. Pleydell
 ##' @examples

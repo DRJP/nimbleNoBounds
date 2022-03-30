@@ -8,7 +8,10 @@ noteManual <- sprintf("{R} package manual version %s", meta$Version)
 bibentry(
   bibtype = "Manual",
   author  = person("David R.J.", "Pleydell"),
-  title        = "{nimbleNoBounds}: transformed distributions for unbounded sampling in NIMBLE",
+  title        = "{nimbleNoBounds}: Transformed Distributions for Improved MCMC Efficiency",
   year         = year,
-  url          = "https://github.com/DRJP/nimbleNoBOunds"
+  publisher    = "Zenodo",
+  note         = note,
+  doi          = "10.5281/zenodo.6399163",
+  url          = "https://github.com/DRJP/nimbleNoBounds"
 )

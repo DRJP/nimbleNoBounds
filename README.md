@@ -9,22 +9,22 @@ Installation
 ------------
 <!-- The package can be installed from CRAN. In the R console, just write -->
 <!-- ``` -->
-<!-- install.packages("nimbleAPT") -->
+<!-- install.packages("nimbleNoBounds") -->
 <!-- ``` -->
 
-<!-- The package can be installed from github using the R package 'remotes' as follows. -->
-<!-- ``` -->
-<!-- remotes::install_git(url="https://github.com/DRJP/nimbleAPT.git", subdir="nimbleAPT", build_vignettes = TRUE) -->
-<!-- ``` -->
-<!-- Switching to 'build_vignettes = FALSE' makes for a faster installation, and thus may be a prefered option for users already familiar with the package. -->
+The package can be installed from github using the R package 'remotes' as follows.
+```
+remotes::install_git(url="https://github.com/DRJP/nimbleNoBounds.git", subdir="nimbleNoBounds", build_vignettes = TRUE)
+```
+Switching to 'build_vignettes = FALSE' makes for a faster installation, and thus may be a prefered option for users already familiar with the package.
 
 
 Citation
 --------
-<!-- If you use this package in you analyses, please cite it using the following DOI. -->
-<!-- [![DOI](https://zenodo.org/badge/106051349.svg)](https://zenodo.org/badge/latestdoi/106051349) -->
+If you use this package in you analyses, please cite it using the following DOI.
+[![DOI](https://zenodo.org/badge/6399163.svg)](https://zenodo.org/badge/latestdoi/6399163)
 
-<!-- The full citation is available in BibTex format via the following R command. -->
-<!-- ``` -->
-<!-- citation("nimbleAPT") -->
+The full citation is available in BibTex format via the following R command.
+```
+<!-- citation("nimbleNoBounds") -->
 <!-- ``` -->

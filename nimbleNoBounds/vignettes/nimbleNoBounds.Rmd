@@ -139,17 +139,14 @@ configureMcmcU = configureMCMC(cUnbounded, monitors=monitorNodes)
 ## Remove posterior predictive samplers & replace with univariate Metropolis-Hastings
 configureMcmcB$removeSamplers()
 configureMcmcU$removeSamplers()
-for (nd in stochNodesB)
-  configureMcmcB$addSampler(nd)
-for (nd in stochNodesU)
-  configureMcmcU$addSampler(nd)
+for (nd in stochNodesB) configureMcmcB$addSampler(nd)
+for (nd in stochNodesU) configureMcmcU$addSampler(nd)
 print(configureMcmcB)
 print(configureMcmcU)
 
 ## Build & compile the MCMCs
 rMcmcB <- buildMCMC(configureMcmcB)
 rMcmcU <- buildMCMC(configureMcmcU)
-
 cMcmcB <- compileNimble(rMcmcB)
 cMcmcU <- compileNimble(rMcmcU)
 
@@ -163,8 +160,8 @@ if (runLoop) {
   for (ii in 1:nReps) {
     print(ii)
     ## Run MCMC
-    stimeB = system.time(cMcmcB$run(niter=nSamples, time = TRUE))["elapsed"]
-    stimeU = system.time(cMcmcU$run(niter=nSamples, time = TRUE))["elapsed"]
+    cMcmcB$run(niter=nSamples, time = TRUE)
+    cMcmcU$run(niter=nSamples, time = TRUE)
     ## Extract samples
     samplesB = as.matrix(cMcmcB$mvSamples)
     samplesU = as.matrix(cMcmcU$mvSamples)

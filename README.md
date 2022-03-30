@@ -22,9 +22,9 @@ Switching to 'build_vignettes = FALSE' makes for a faster installation, and thus
 Citation
 --------
 If you use this package in you analyses, please cite it using the following DOI.
-[![DOI](https://zenodo.org/badge/6399163.svg)](https://zenodo.org/badge/latestdoi/6399163)
+[![DOI](https://zenodo.org/badge/474911114.svg)](https://zenodo.org/badge/latestdoi/474911114)
 
 The full citation is available in BibTex format via the following R command.
 ```
-<!-- citation("nimbleNoBounds") -->
-<!-- ``` -->
+citation("nimbleNoBounds")
+```

@@ -123,7 +123,10 @@ cUnbounded <- compileNimble(rUnbounded)
 
 Now we perform MCMC using nimble's univariate Metropolis Hastings sampler.
 We use `B` to indicate _bounded_ and `U` to indicate _unbounded_.
-
+The aim is to calculate the efficiency gain for sampling each distribution on the real line.
+This is done within a loop so that between-run variation can be accounted for.
+_Efficiency_ is calculated as the ratio of effective sample size divided by time spent executing a given sampler.
+The efficiency _gain_ is the calculated as the ratio (unbounded over bounded) of the efficiencies.
 
 ```{r fitting, eval=FALSE, message=FALSE}
 ## Lists of nodes
@@ -150,8 +153,9 @@ rMcmcU <- buildMCMC(configureMcmcU)
 cMcmcB <- compileNimble(rMcmcB)
 cMcmcU <- compileNimble(rMcmcU)
 
-## The following loop takes roughly XYZ minutes.
+## The following loop takes approximately 10 minutes.
 ## You can optionally skip running the loop and load the data object `efficiencyGain` from the package.
+## Or simply just reduce nSamples and nReps.
 runLoop = FALSE
 if (runLoop) {
   nSamples = 1E5
@@ -183,12 +187,9 @@ if (runLoop) {
   data(efficiencyGain)
 }
 ```
-```{r efficiencyGain, fig.width=7, fig.height=7, echo=FALSE, message=FALSE}
-## load data efficiencyGain, to avoid running slow loop above
 
-```
+Finally, some boxplots of the efficiency gain per distribution, annotated with the with mean and 95% CIs.
 
-Finally, some boxplots of the efficiency gain per distribution, with mean and 95% CIs.
 ```{r plotting, fig.width=7, fig.height=4, message=FALSE}
 boxplot(log10(efficiencyGain), ylab="log10 Efficiency Gain", ylim=c(-1, 4))
 abline(h=0)

@@ -183,6 +183,7 @@ if (runLoop) {
   }
   colnames(efficiencyGain) = distributions
   ## write.table(efficiencyGain, file=here::here("data/efficiencyGain.csv"), sep=";", row.names = FALSE)
+  ## save(efficiencyGain, file=here::here("data/efficiencyGain.Rdata"))
 } else {
   data(efficiencyGain)
 }

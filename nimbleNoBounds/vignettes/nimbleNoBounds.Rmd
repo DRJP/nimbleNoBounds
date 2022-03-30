@@ -19,15 +19,16 @@ The principal motivation of this package is that bounds on prior distributions c
 In particular, when using Metropolis-Hastings, proposals made beyond the known bounds of a distribution will inflate rejection rates.
 Moreover, in adaptive Metropolis-Hastings, such increased rejection rates will lead to shrinking the Metropolis-Hastings kernel,
 thereby increasing the auto-correlation in the accepted samples and reducing the effective sample size.
+The result can therefore be reduced MCMC efficiency.
 
 
 This package offers a simple solution to avoid these scenarios.
 Common bounded probability distributions (beta, uniform, exponential, gamma, chi-squared, half-flat, inverse-gamma, log-normal, weibull)
 are transformed, via log or logit transformations, to the unbounded real line.
-The change of variables technique is used to obtain the transformed distribution.
+The change of variables technique is used to obtain the transformed distributions.
 The resulting distributions are provided here for use in nimble models.
-__Sampling on the unbounded real line may increase MCMC efficiency.__
-We explore that claim below with a series of simple examples.
+We explore the potential efficiency gain below with a simple toy example.
+
 
 # Distributions included in `nimbleNoBounds`
 
@@ -130,10 +131,10 @@ distributions = substring(rBounded$getDistribution(monitorNodes), 2, 99)
 
 Now we perform MCMC using nimble's univariate Metropolis Hastings sampler.
 We use `B` to indicate _bounded_ and `U` to indicate _unbounded_.
-The aim is to calculate the efficiency gain for sampling each distribution on the real line.
+The aim is to calculate the efficiency gain when sampling each distribution on the real line.
 This is done within a loop so that between-run variation can be accounted for.
 _Efficiency_ is calculated as the ratio of effective sample size divided by time spent executing a given sampler.
-The efficiency _gain_ is the calculated as the ratio (unbounded over bounded) of the efficiencies.
+The efficiency _gain_ is then calculated as the ratio (unbounded over bounded) of the efficiencies.
 
 ```{r fitting, eval=FALSE, message=FALSE}
 ## Configure an MCMC for each model
@@ -184,7 +185,6 @@ if (runLoop) {
   }
   colnames(efficiencyGain) = distributions
   ## write.table(efficiencyGain, file=here::here("nimbleNoBounds/data/efficiencyGain.csv"), sep=";", row.names = FALSE)
-  ## save(efficiencyGain, file=here::here("nimbleNoBounds/data/efficiencyGain.rda"))
 }
 ```
 

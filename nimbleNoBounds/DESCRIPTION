@@ -1,6 +1,6 @@
 Package: nimbleNoBounds
 Type: Package
-Title: Common Probability Distributions Transformed to the Real Line
+Title: Common Distributions Transformed to the Real Line
 Version: 1.0.0
 Encoding: UTF-8
 Date: 2022-03-25

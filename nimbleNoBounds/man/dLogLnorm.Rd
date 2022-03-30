@@ -5,9 +5,9 @@
 \alias{rLogLnorm}
 \title{Log transformed log-normal distribution.}
 \usage{
-dLogLnorm(x, meanlog = 1, sdlog = 1, log = 0)
+dLogLnorm(x, meanlog = 0, sdlog = 1, log = 0)
 
-rLogLnorm(n = 1, meanlog = 1, sdlog = 1)
+rLogLnorm(n = 1, meanlog = 0, sdlog = 1)
 }
 \arguments{
 \item{x}{A continuous random variable on the real line. Let y=exp(x). Then y ~ dlnorm(meanlog, sdlog).}

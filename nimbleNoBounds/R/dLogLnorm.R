@@ -59,10 +59,10 @@ NULL
 #' @rdname dLogLnorm
 #' @export
 dLogLnorm <- nimbleFunction (
-  run = function(x     = double(0),
-                 meanlog = double(0, default=1.0),
-                 sdlog = double(0, default=1.0),
-                 log   = integer(0, default=0)) {
+  run = function(x       = double(0),
+                 meanlog = double(0, default=0.0),
+                 sdlog   = double(0, default=1.0),
+                 log     = integer(0, default=0)) {
     ## Returns density of x where
     ##                    y ~ Lnorm(meanlog,sdlog)
     ##                    x = log(y)
@@ -77,7 +77,7 @@ dLogLnorm <- nimbleFunction (
 #' @export
 rLogLnorm <- nimbleFunction (
   run = function(n       = integer(0, default=1),
-                 meanlog = double(0, default=1.0),
+                 meanlog = double(0, default=0.0),
                  sdlog   = double(0, default=1.0)) {
     ## Generates y ~ Lnorm(meanlog, sdlog)
     ## Returns   x = log(y)

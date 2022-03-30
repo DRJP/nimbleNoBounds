@@ -117,7 +117,7 @@ rBounded   <- nimbleModel(boundedDistributionsModel, constants=const)
 rUnbounded <- nimbleModel(unboundedDistributionsModel, constants=const)
 
 cBounded   <- compileNimble(rBounded)
-cUnbounded <- compileNimble(rUnbounded, showCompilerOutput = TRUE)
+cUnbounded <- compileNimble(rUnbounded)
 
 ```
 
@@ -153,11 +153,10 @@ cMcmcB <- compileNimble(rMcmcB)
 cMcmcU <- compileNimble(rMcmcU)
 
 
-nReps = 10
+nReps = 111
 gain = matrix(0, ncol=length(monitorNodes), nrow=nReps)
 for (ii in 1:nReps) {
-  if (ii %% 10 == 0)
-    print(ii)
+  print(ii)
   ## Run MCMC
   stimeB = system.time(cMcmcB$run(niter=1E6, time = TRUE))["elapsed"]
   stimeU = system.time(cMcmcU$run(niter=1E6, time = TRUE))["elapsed"]
@@ -165,8 +164,8 @@ for (ii in 1:nReps) {
   samplesB = as.matrix(cMcmcB$mvSamples)
   samplesU = as.matrix(cMcmcU$mvSamples)
   ## Calculate effective sample size
-  effB = effectiveSize(samplesB)
-  effU = effectiveSize(samplesU)
+  (effB = effectiveSize(samplesB))
+  (effU = effectiveSize(samplesU))
   ## Time spent in each sampler
   timeB = cMcmcB$getTimes()
   timeU = cMcmcU$getTimes()
@@ -177,7 +176,8 @@ for (ii in 1:nReps) {
   (efficiencyGain = efficiencyU / efficiencyB)
   gain[ii,] = efficiencyGain
 }
-colnames(gain) = c("Beta", "Unif", "Exp", "Gamma")  # monitorNodes
+colnames(gain) = c("Beta", "Chi-sq", "Exp", "Gamma", "Inv-gamma", "Log-norm", "Uniform", "Weibull")
+monitorNodes
 
 ## write.csv(gain, file=here::here("data/gain.csv"), row.names = FALSE)
 

@@ -181,7 +181,7 @@ if (runLoop) {
     (efficiencyGain[ii,] = efficiencyU / efficiencyB)
   }
   colnames(efficiencyGain) = distributions
-  ## write.csv(efficiencyGain, file=here::here("data/gain.csv"), row.names = FALSE)
+  ## write.table(efficiencyGain, file=here::here("data/gain.csv"), sep=";", row.names = FALSE)
 } else {
   data(efficiencyGain)
 }

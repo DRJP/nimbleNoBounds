@@ -65,7 +65,7 @@ The following toy problem compares sampling of bounded and unbounded distributio
 
 First, we create nimble models with both classical bounded distributions, and with unbounded transformed equivalents.
 
-```{r model, fig.width=7, fig.height=7, message=FALSE, warning=FALSE}
+```{r model, message=FALSE, warning=FALSE}
 library(nimbleNoBounds) # Also loads nimble
 library(coda)           # For MCMC diagnostics
 
@@ -125,11 +125,12 @@ Now we perform MCMC using nimble's univariate Metropolis Hastings sampler.
 We use `B` to indicate _bounded_ and `U` to indicate _unbounded_.
 
 
-```{r fitting, fig.width=7, fig.height=7, eval=FALSE, message=FALSE}
+```{r fitting, eval=FALSE, message=FALSE}
 ## Lists of nodes
-stochNodesB  = rBounded$getNodeNames(stochOnly=TRUE)
-stochNodesU  = rUnbounded$getNodeNames(stochOnly=TRUE)
-monitorNodes = stochNodesB
+stochNodesB   = rBounded$getNodeNames(stochOnly=TRUE)
+stochNodesU   = rUnbounded$getNodeNames(stochOnly=TRUE)
+monitorNodes  = stochNodesB
+distributions = substring(rBounded$getDistribution(monitorNodes), 2, 99)
 
 ## Configure an MCMC for each model
 configureMcmcB = configureMCMC(cBounded,   monitors=monitorNodes)
@@ -152,58 +153,56 @@ rMcmcU <- buildMCMC(configureMcmcU)
 cMcmcB <- compileNimble(rMcmcB)
 cMcmcU <- compileNimble(rMcmcU)
 
-
-nReps = 111
-gain = matrix(0, ncol=length(monitorNodes), nrow=nReps)
-for (ii in 1:nReps) {
-  print(ii)
-  ## Run MCMC
-  stimeB = system.time(cMcmcB$run(niter=1E6, time = TRUE))["elapsed"]
-  stimeU = system.time(cMcmcU$run(niter=1E6, time = TRUE))["elapsed"]
-  ## Extract samples
-  samplesB = as.matrix(cMcmcB$mvSamples)
-  samplesU = as.matrix(cMcmcU$mvSamples)
-  ## Calculate effective sample size
-  (effB = effectiveSize(samplesB))
-  (effU = effectiveSize(samplesU))
-  ## Time spent in each sampler
-  timeB = cMcmcB$getTimes()
-  timeU = cMcmcU$getTimes()
-  ## Calculate sampling efficiency
-  (efficiencyB = effB / timeB)
-  (efficiencyU = effU / timeU)
-  ## Calculate efficiency gain
-  (efficiencyGain = efficiencyU / efficiencyB)
-  gain[ii,] = efficiencyGain
+## The following loop takes roughly XYZ minutes.
+## You can optionally skip running the loop and load the data object `efficiencyGain` from the package.
+runLoop = FALSE
+if (runLoop) {
+  nSamples = 1E5
+  nReps    = 111
+  efficiencyGain = matrix(0, ncol=length(monitorNodes), nrow=nReps)
+  for (ii in 1:nReps) {
+    print(ii)
+    ## Run MCMC
+    stimeB = system.time(cMcmcB$run(niter=nSamples, time = TRUE))["elapsed"]
+    stimeU = system.time(cMcmcU$run(niter=nSamples, time = TRUE))["elapsed"]
+    ## Extract samples
+    samplesB = as.matrix(cMcmcB$mvSamples)
+    samplesU = as.matrix(cMcmcU$mvSamples)
+    ## Calculate effective sample size
+    (effB = effectiveSize(samplesB))
+    (effU = effectiveSize(samplesU))
+    ## Time spent in each sampler
+    timeB = cMcmcB$getTimes()
+    timeU = cMcmcU$getTimes()
+    ## Calculate sampling efficiency
+    (efficiencyB = effB / timeB)
+    (efficiencyU = effU / timeU)
+    ## Calculate efficiencyGain
+    (efficiencyGain[ii,] = efficiencyU / efficiencyB)
+  }
+  colnames(efficiencyGain) = distributions
+  ## write.csv(efficiencyGain, file=here::here("data/gain.csv"), row.names = FALSE)
+} else {
+  data(efficiencyGain)
 }
-colnames(gain) = c("Beta", "Chi-sq", "Exp", "Gamma", "Inv-gamma", "Log-norm", "Uniform", "Weibull")
-monitorNodes
-
-## write.csv(gain, file=here::here("data/gain.csv"), row.names = FALSE)
-
 ```
-```{r gain, fig.width=7, fig.height=7, echo=FALSE, message=FALSE}
-## load data gain, to avoid running slow loop above
-data(gain)
+```{r efficiencyGain, fig.width=7, fig.height=7, echo=FALSE, message=FALSE}
+## load data efficiencyGain, to avoid running slow loop above
+
 ```
 
 Finally, some boxplots of the efficiency gain per distribution, with mean and 95% CIs.
-```{r plotting, fig.width=7, fig.height=7, message=FALSE}
-boxplot(log10(gain), ylab="log10 Efficiency Gain")
+```{r plotting, fig.width=7, fig.height=4, message=FALSE}
+boxplot(log10(efficiencyGain), ylab="log10 Efficiency Gain", ylim=c(-1, 4))
 abline(h=0)
-text(1, 1, paste("x", signif(mean(gain[,"Beta"]), 3)))
-text(1, 0.8, paste0("(", paste(signif(quantile(gain[,"Beta"], c(0.025, 0.975)), 3), collapse=" - "), ")"))
-text(2, 1, paste("x", signif(mean(gain[,"Unif"]), 3)))
-text(2, 0.8, paste0("(", paste(signif(quantile(gain[,"Unif"], c(0.025, 0.975)), 3), collapse=" - "), ")"))
-text(3, 1, paste("x", signif(mean(gain[,"Exp"]), 3)))
-text(3, 0.8, paste0("(", paste(signif(quantile(gain[,"Exp"], c(0.025, 0.975)), 3), collapse=" - "), ")"))
-text(4, 1, paste("x", signif(mean(gain[,"Gamma"]), 3)))
-text(4, 0.8, paste0("(", paste(signif(quantile(gain[,"Gamma"], c(0.025, 0.975)), 3), collapse=" - "), ")"))
-
+for (ii in 1:length(distributions)) {
+  text(ii, -0.7, paste("x", signif(mean(efficiencyGain[,distributions[ii]]), 3)))
+  text(ii, -0.9, paste0("(", paste(signif(quantile(efficiencyGain[,distributions[ii]], c(0.025, 0.975)), 3), collapse=" - "), ")"))
+}
 
 ```
 
 These results show that:
 1. large efficiency gains can be obtained from sampling on the real line.
 2. the size of the efficiency gain depends on the target distribution being sampled.
-3. computational overhead arising from the transformations is negligable compared to potential efficiency gain from sampling on the unbounded real line.
+3. computational overhead arising from the transformations is negligable compared to potential efficiency efficiencyGain from sampling on the unbounded real line.

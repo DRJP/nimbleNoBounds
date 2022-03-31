@@ -1,7 +1,7 @@
 nimbleNoBounds
 ===============
 
-A collection of continuous uni-variate probability distributions transformed to the (unbounded) real line.
+A collection of continuous univariate probability distributions transformed to the (unbounded) real line.
 Using these transformed distributions can (theoretically) result in more efficient MCMC.
 
 

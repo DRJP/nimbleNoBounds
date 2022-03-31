@@ -129,7 +129,7 @@ monitorNodes  = stochNodesB
 distributions = substring(rBounded$getDistribution(monitorNodes), 2, 99)
 ```
 
-Now we perform MCMC using nimble's univariate Metropolis Hastings sampler.
+Now we perform MCMC using nimble's univariate Metropolis-Hastings sampler.
 We use `B` to indicate _bounded_ and `U` to indicate _unbounded_.
 The aim is to calculate the efficiency gain when sampling each distribution on the real line.
 This is done within a loop so that between-run variation can be accounted for.

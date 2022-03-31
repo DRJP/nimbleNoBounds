@@ -22,12 +22,13 @@ thereby increasing the auto-correlation in the accepted samples and reducing the
 The result can therefore be reduced MCMC efficiency.
 
 
-This package offers a simple solution to avoid these scenarios.
+This package offers a simple solution to avoid this scenario.
 Common bounded probability distributions (beta, uniform, exponential, gamma, chi-squared, half-flat, inverse-gamma, log-normal, weibull)
 are transformed, via log or logit transformations, to the unbounded real line.
 The change of variables technique is used to obtain the transformed distributions.
 The resulting distributions are provided here for use in nimble models.
-We explore the potential efficiency gain below with a simple toy example.
+
+In this vignette we explore the potential efficiency gains with a simple toy example.
 
 
 # Distributions included in `nimbleNoBounds`
@@ -98,7 +99,7 @@ unboundedDistributionsModel <- nimbleCode({
   c  <- exp(tc)
   e  <- exp(te)
   g  <- exp(tg)
-  ig <- exp(tig) ## NIMBLE bug??? Doesn't compile if I call this node i
+  ig <- exp(tig) ## Currently doesn't compile if a node is called "i"
   l  <- exp(tl)
   u  <- (u2*exp(tu)+u1)/(u2-u1)
   w  <- exp(tw)

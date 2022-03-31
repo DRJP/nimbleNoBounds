@@ -2,7 +2,9 @@ nimbleNoBounds
 ===============
 
 A collection of continuous univariate probability distributions transformed to the (unbounded) real line.
-Using these transformed distributions can (theoretically) result in more efficient MCMC.
+Using these transformed distributions can result in more efficient MCMC,
+particularly when adaptive Metropolis-Hastings is used to sample in the vicinity of bounds on the parameter-space.
+See vignette(nimbleNoBounds) for several examples.
 
 
 Installation

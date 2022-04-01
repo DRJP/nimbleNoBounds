@@ -32,7 +32,9 @@
 ##' curve(dgamma(x, shape=shape, scale=scale), 0, 100, n=1001, col="red", lwd=3, add=TRUE)
 ##'
 ##' code = nimbleCode({
-##'   log(y) ~ dLogGamma(shape=shape, scale=scale)
+##'   log(y)  ~ dLogGamma(shape=shape, scale=scale)
+##'   log(y2) ~ dLogGamma(shape=shape, rate=1/scale)
+##'   log(y3) ~ dLogGamma(mean=shape*scale, sd=scale * sqrt(shape))
 ##' })
 ##' const = list (shape=shape, scale=scale)
 ##' modelR = nimbleModel(code=code, const=const)
@@ -41,9 +43,12 @@
 ##' conf  = configureMCMC(modelC)
 ##' mcmc  = buildMCMC(conf=conf)
 ##' cMcmc = compileNimble(mcmc)
-##' x = as.vector(runMCMC(mcmc=cMcmc, niter=50000))
+##' mcmcOutput = runMCMC(mcmc=cMcmc, niter=50000)
+##' x  = as.vector(mcmcOutput[,"log_y"])
+##' x2 = as.vector(mcmcOutput[,"log_y2"])
+##' x3 = as.vector(mcmcOutput[,"log_y3"])
 ##' y = exp(x)
-##' par(mfrow=n2mfrow(3))
+##' par(mfrow=n2mfrow(4))
 ##' ## Plot 1: MCMC trajectory
 ##' plot(x, typ="l")
 ##' ## Plot 2: taget density on unbounded sampling scale
@@ -52,6 +57,15 @@
 ##' ## Plot 3: taget density on bounded scale
 ##' hist(exp(x), n=100, freq=FALSE)
 ##' curve(dgamma(x, shape=shape, scale=scale), 0, 25, n=1001, col="red", lwd=3, add=TRUE)
+##' ## Plot 4: different parameterisations
+##' nBreaks=51
+##' xLims = range(pretty(range(mcmcOutput)))
+##' hist(x, breaks=seq(xLims[1], xLims[2], l=nBreaks), col=rgb(1, 0, 0, 0.1))
+##' hist(x2, breaks=seq(xLims[1], xLims[2], l=nBreaks), col=rgb(0, 1, 0, 0.1), add=TRUE)
+##' hist(x3, breaks=seq(xLims[1], xLims[2], l=nBreaks), col=rgb(0, 0, 1, 0.1), add=TRUE)
+##'
+##'
+
 
 NULL
 

@@ -207,4 +207,4 @@ These results show that:
 
 1. large efficiency gains can be obtained from sampling on the real line.
 2. the size of the efficiency gain depends on the target distribution being sampled.
-3. computational overhead arising from the transformations is negligible compared to potential efficiency gain from sampling on the unbounded real line.
+3. computational overhead arising from the transformations is negligible compared to potential efficiency gains from sampling on the unbounded real line.

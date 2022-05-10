@@ -28,12 +28,14 @@ The density or log density of x, such that x = log(y) and y ~ dlnorm(meanlog,sdl
 }
 \examples{
 
+## Create a log-normal random variable, and transform it to the log scale
 n       = 100000
 meanlog = -3
 sdlog   = 0.1
 y       = rlnorm(n=n, meanlog=meanlog, sdlog=sdlog)
 x       = log(y)
 
+## Plot histograms of the two random variables
 par(mfrow=n2mfrow(2))
 ## Plot 1
 hist(x, n=100, freq=FALSE)
@@ -44,18 +46,28 @@ yNew   = exp(xNew)
 hist(yNew, n=100, freq=FALSE, xlab="exp(x)")
 curve(dlnorm(x, meanlog=meanlog, sdlog=sdlog), 0, 0.1, n=1001, col="red", lwd=3, add=TRUE)
 
+## Create a NIMBLE model that uses this transformed distribution
 code = nimbleCode({
   log(y) ~ dLogLnorm(meanlog=meanlog, sdlog=sdlog)
 })
+
+\dontrun{
+## Build & compile the model
 const = list (meanlog=meanlog, sdlog=sdlog)
 modelR = nimbleModel(code=code, const=const)
 simulate(modelR)
 modelC = compileNimble(modelR)
+
+## Configure, build and compile an MCMC
 conf  = configureMCMC(modelC)
 mcmc  = buildMCMC(conf=conf)
 cMcmc = compileNimble(mcmc)
+
+## Run the MCMC
 x = as.vector(runMCMC(mcmc=cMcmc, niter=50000))
 y = exp(x)
+
+## Plot MCMC output
 par(mfrow=n2mfrow(3))
 ## Plot 1: MCMC trajectory
 plot(x, typ="l")
@@ -63,8 +75,9 @@ plot(x, typ="l")
 hist(x, n=100, freq=FALSE)
 curve(dLogLnorm(x, meanlog=meanlog, sdlog=sdlog), -4, -2, n=1001, col="red", lwd=3, add=TRUE)
 ## Plot 3: taget density on bounded scale
-hist(exp(x), n=100, freq=FALSE)
+hist(y, n=100, freq=FALSE)
 curve(dlnorm(x, meanlog=meanlog, sdlog=sdlog), 0, 0.1, n=1001, col="red", lwd=3, add=TRUE)
+}
 }
 \author{
 David R.J. Pleydell

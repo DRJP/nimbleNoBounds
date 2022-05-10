@@ -15,12 +15,14 @@
 ##' @author David R.J. Pleydell
 ##' @examples
 ##'
+##' ## Create a Weibull random variable, and transform it to the log scale
 ##' n      = 100000
 ##' shape = 2
 ##' scale = 2
 ##' y      = rweibull(n=n, shape=shape, scale=scale)
 ##' x      = log(y)
 ##'
+##' ## Plot histograms of the two random variables
 ##' par(mfrow=n2mfrow(2))
 ##' ## Plot 1
 ##' hist(x, n=100, freq=FALSE, xlab="x = log(y)",
@@ -32,18 +34,28 @@
 ##' hist(yNew, n=100, freq=FALSE, xlab="y = exp(x)", main="Histogram of random numbers from rLogWeib.")
 ##' curve(dweibull(x, shape=shape, scale=scale), 0, 100, n=1001, col="red", lwd=3, add=TRUE)
 ##'
+##' ## Create a NIMBLE model that uses this transformed distribution
 ##' code = nimbleCode({
 ##'   log(y) ~ dLogWeib(shape=shape, scale=scale)
 ##' })
+##'
+##' \dontrun{
+##' ## Build & compile the model
 ##' const = list (shape=shape, scale=scale)
 ##' modelR = nimbleModel(code=code, const=const)
 ##' simulate(modelR)
 ##' modelC = compileNimble(modelR)
+##'
+##' ## Configure, build and compile an MCMC
 ##' conf  = configureMCMC(modelC)
 ##' mcmc  = buildMCMC(conf=conf)
 ##' cMcmc = compileNimble(mcmc)
+##'
+##' ## Run the MCMC
 ##' x = as.vector(runMCMC(mcmc=cMcmc, niter=50000))
 ##' y = exp(x)
+##'
+##' ## Plot MCMC output
 ##' par(mfrow=n2mfrow(3))
 ##' ## Plot 1: MCMC trajectory
 ##' plot(x, typ="l")
@@ -51,9 +63,10 @@
 ##' hist(x, n=100, freq=FALSE, main="Histogram of MCMC samples", xlab="x = log(y)")
 ##' curve(dLogWeib(x, shape=shape, scale=scale), -5, 3, n=1001, col="red", lwd=3, add=TRUE)
 ##' ## Plot 3: taget density on bounded scale
-##' hist(exp(x), n=100, freq=FALSE, xlab="y = exp(x)",
+##' hist(y, n=100, freq=FALSE, xlab="y = exp(x)",
 ##'      main="Histogram of back-transformed MCMC samples")
 ##' curve(dweibull(x, shape=shape, scale=scale), 0, 8, n=1001, col="red", lwd=3, add=TRUE)
+##' }
 
 NULL
 

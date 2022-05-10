@@ -17,12 +17,14 @@
 ##' @author David R.J. Pleydell
 ##' @examples
 ##'
+##' ## Create an inverse gamma random variable, and transform it to the log scale
 ##' n      = 100000
 ##' shape = 2.5
 ##' scale = 0.01
 ##' y      = rinvgamma(n=n, shape=shape, scale=scale)
 ##' x      = log(y)
 ##'
+##' ## Plot histograms of the two random variables
 ##' par(mfrow=n2mfrow(4))
 ##' ## Plot 1
 ##' hist(y, n=100, freq=FALSE, xlab="y")
@@ -40,18 +42,30 @@
 ##' hist(yNew, n=100, freq=FALSE, xlab="exp(x)")
 ##' curve(dinvgamma(x, shape=shape, scale=scale), 0, 1, n=5001, col="red", lwd=3, add=TRUE)
 ##'
+##' ## Create a NIMBLE model that uses this transformed distribution
 ##' code = nimbleCode({
 ##'   log(y) ~ dLogInvgamma(shape=shape, scale=scale)
 ##' })
-##' const = list (shape=shape, scale=scale)
+##'
+##' \dontrun{
+##' ## Build & compile the model
+##' const  = list(shape=shape, scale=scale)
 ##' modelR = nimbleModel(code=code, const=const)
 ##' simulate(modelR)
 ##' modelC = compileNimble(modelR)
-##' conf  = configureMCMC(modelC)
+##'
+##' ## Configure, build and compile an MCMC
+##' conf  = configureMCMC(modelC, monitors=c("log_y", "y"))
 ##' mcmc  = buildMCMC(conf=conf)
 ##' cMcmc = compileNimble(mcmc)
-##' x = as.vector(runMCMC(mcmc=cMcmc, niter=50000))
-##' y = exp(x)
+##'
+##' ## Run the MCMC
+##' samps = runMCMC(mcmc=cMcmc, niter=50000)
+##' x = samps[,"log_y"]
+##' y = samps[,"y"]
+##'
+##'
+##' ## Plot MCMC output
 ##' par(mfrow=n2mfrow(3))
 ##' ## Plot 1: MCMC trajectory
 ##' plot(x, typ="l")
@@ -60,8 +74,9 @@
 ##' curve(dLogInvgamma(x, shape=shape, scale=scale), -10, 1, n=1001, col="red", lwd=3, add=TRUE)
 ##' ## Plot 3: taget density on bounded scale
 ##' curve(dinvgamma(x, shape=shape, scale=scale), xlab="y = exp(x)", 0, 0.5, n=1001, col="red", lwd=3)
-##' hist(exp(x), n=100, freq=FALSE, add=TRUE)
+##' hist(y, n=100, freq=FALSE, add=TRUE)
 ##' curve(dinvgamma(x, shape=shape, scale=scale), 0, 0.5, n=1001, col="red", add=TRUE, lwd=3)
+##' }
 
 NULL
 

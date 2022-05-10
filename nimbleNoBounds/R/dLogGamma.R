@@ -15,12 +15,14 @@
 ##' @author David R.J. Pleydell
 ##' @examples
 ##'
+##' ## Create a gamma random variable, and transform it to the log scale
 ##' n      = 100000
 ##' shape = 2
 ##' scale = 2
 ##' y      = rgamma(n=n, shape=shape, scale=scale)
 ##' x      = log(y)
 ##'
+##' ## Plot histograms of the two random variables
 ##' par(mfrow=n2mfrow(2))
 ##' ## Plot 1
 ##' hist(x, n=100, freq=FALSE)
@@ -31,23 +33,35 @@
 ##' hist(yNew, n=100, freq=FALSE, xlab="exp(x)")
 ##' curve(dgamma(x, shape=shape, scale=scale), 0, 100, n=1001, col="red", lwd=3, add=TRUE)
 ##'
+##' ## Create a NIMBLE model that uses this distribution
 ##' code = nimbleCode({
 ##'   log(y)  ~ dLogGamma(shape=shape, scale=scale)
 ##'   log(y2) ~ dLogGamma(shape=shape, rate=1/scale)
 ##'   log(y3) ~ dLogGamma(mean=shape*scale, sd=scale * sqrt(shape))
 ##' })
+##'
+##' \dontrun{
+##' ## Build & compile the model
 ##' const = list (shape=shape, scale=scale)
 ##' modelR = nimbleModel(code=code, const=const)
 ##' simulate(modelR)
 ##' modelC = compileNimble(modelR)
-##' conf  = configureMCMC(modelC)
+##'
+##' ## Configure, build and compile an MCMC
+##' conf  = configureMCMC(modelC, monitors2=c("y", "y2", "y3"))
 ##' mcmc  = buildMCMC(conf=conf)
 ##' cMcmc = compileNimble(mcmc)
-##' mcmcOutput = runMCMC(mcmc=cMcmc, niter=50000)
-##' x  = as.vector(mcmcOutput[,"log_y"])
-##' x2 = as.vector(mcmcOutput[,"log_y2"])
-##' x3 = as.vector(mcmcOutput[,"log_y3"])
-##' y = exp(x)
+##'
+##' ## Run the MCMC & extract samples
+##' samps = runMCMC(mcmc=cMcmc, niter=50000)
+##' x  = as.vector(samps[[1]][,"log_y"])
+##' x2 = as.vector(samps[[1]][,"log_y2"])
+##' x3 = as.vector(samps[[1]][,"log_y3"])
+##' y  = as.vector(samps[[2]][,"y"])
+##' y2 = as.vector(samps[[2]][,"y2"])
+##' y3 = as.vector(samps[[2]][,"y3"])
+##'
+##' ## Plot MCMC output
 ##' par(mfrow=n2mfrow(4))
 ##' ## Plot 1: MCMC trajectory
 ##' plot(x, typ="l")
@@ -55,15 +69,15 @@
 ##' hist(x, n=100, freq=FALSE)
 ##' curve(dLogGamma(x, shape=shape, scale=scale), -4, 3, n=1001, col="red", lwd=3, add=TRUE)
 ##' ## Plot 3: taget density on bounded scale
-##' hist(exp(x), n=100, freq=FALSE)
+##' hist(y, n=100, freq=FALSE)
 ##' curve(dgamma(x, shape=shape, scale=scale), 0, 25, n=1001, col="red", lwd=3, add=TRUE)
 ##' ## Plot 4: different parameterisations
 ##' nBreaks=51
-##' xLims = range(pretty(range(mcmcOutput)))
+##' xLims = range(pretty(range(samps[[1]])))
 ##' hist(x, breaks=seq(xLims[1], xLims[2], l=nBreaks), col=rgb(1, 0, 0, 0.1))
 ##' hist(x2, breaks=seq(xLims[1], xLims[2], l=nBreaks), col=rgb(0, 1, 0, 0.1), add=TRUE)
 ##' hist(x3, breaks=seq(xLims[1], xLims[2], l=nBreaks), col=rgb(0, 0, 1, 0.1), add=TRUE)
-##'
+##' }
 ##'
 
 

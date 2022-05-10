@@ -1,3 +1,8 @@
+                            CHANGES IN VERSION 1.0.1 (May 2022)
+
+USER LEVEL CHANGES
+-- Modifications to examples in help files.
+
                             CHANGES IN VERSION 1.0.0 (March 2022)
 
 USER LEVEL CHANGES

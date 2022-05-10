@@ -5,9 +5,9 @@
 \alias{nimbleNoBounds}
 \title{nimbleNoBounds}
 \description{
-A collection of nimble functions for sampling common probability distributions on unbounded scales.
+A collection of NIMBLE functions for sampling common probability distributions on unbounded scales.
 }
-\section{Transformed probability distributions for unbounded sampling in nimble.}{
+\section{Transformed probability distributions for unbounded sampling in NIMBLE.}{
 NA
 }
 

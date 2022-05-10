@@ -14,11 +14,13 @@
 ##' @author David R.J. Pleydell
 ##' @examples
 ##'
+##' ## Create a exponential random variable, and transform it to the log scale
 ##' n      = 100000
 ##' lambda = 3
 ##' y      = rexp(n=n, rate=lambda)
 ##' x      = log(y)
 ##'
+##' ## Plot histograms of the two random variables
 ##' par(mfrow=n2mfrow(2))
 ##' ## Plot 1
 ##' hist(x, n=100, freq=FALSE)
@@ -29,15 +31,28 @@
 ##' hist(yNew, n=100, freq=FALSE, xlab="exp(x)")
 ##' curve(dexp(x, rate=lambda), 0, 4, n=1001, col="red", lwd=3, add=TRUE)
 ##'
+##' ## Create a NIMBLE model that uses this distribution
 ##' code = nimbleCode({
 ##'   x ~ dLogExp(rate = 0.5)
+##'   y <- exp(x)
 ##' })
+##'
+##' \dontrun{
+##' ## Build & compile the model
 ##' modelR = nimbleModel(code=code)
 ##' modelC = compileNimble(modelR)
-##' conf  = configureMCMC(modelC)
+##'
+##' ## Configure, build and compile an MCMC
+##' conf  = configureMCMC(modelC, monitors=c("x","y"))
 ##' mcmc  = buildMCMC(conf=conf)
 ##' cMcmc = compileNimble(mcmc)
-##' x = as.vector(runMCMC(mcmc=cMcmc, niter=50000))
+##'
+##' ## Run the MCMC
+##' samps = runMCMC(mcmc=cMcmc, niter=50000)
+##' x     = samps[,"x"]
+##' y     = samps[,"y"]
+##'
+##' ## Plot MCMC output
 ##' par(mfrow=n2mfrow(3))
 ##' ## Plot 1: MCMC trajectory
 ##' plot(x, typ="l")
@@ -45,8 +60,9 @@
 ##' hist(x, n=100, freq=FALSE)
 ##' curve(dLogExp(x, rate=0.5), -15, 5, n=1001, col="red", lwd=3, add=TRUE)
 ##' ## Plot 3: taget density on bounded scale
-##' hist(exp(x), n=100, freq=FALSE)
+##' hist(y, n=100, freq=FALSE)
 ##' curve(dexp(x, rate=0.5), 0, 25, n=1001, col="red", lwd=3, add=TRUE)
+##' }
 
 NULL
 

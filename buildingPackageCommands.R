@@ -1,19 +1,19 @@
 sessionInfo()
 
-detach("package:nimbleChangeOfVariables")
-unloadNamespace("nimbleChangeOfVariables")
+detach("package:nimbleNoBounds")
+unloadNamespace("nimbleNoBounds")
 
-setwd(here::here('nimbleChangeOfVariables'))
+setwd(here::here('nimbleNoBounds'))
 roxygen2::roxygenise()
 
 setwd(here::here())
-devtools::build("nimbleChangeOfVariables", vignettes=TRUE) # FALSE
+devtools::build("nimbleNoBounds", vignettes=TRUE) # FALSE
 
-devtools::check("nimbleChangeOfVariables")
+devtools::check("nimbleNoBounds")
 
-devtools::install("nimbleChangeOfVariables", build_vignettes = TRUE) # FALSE
+devtools::install("nimbleNoBounds", build_vignettes = TRUE) # FALSE
 
 help.start()
 
-setwd("nimbleChangeOfVariables")
+setwd("nimbleNoBounds")
 devtools::build_vignettes()

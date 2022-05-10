@@ -14,11 +14,13 @@
 ##' @author David R.J. Pleydell
 ##' @examples
 ##'
+##' ## Create a Chi-squared random variable, and transform it to the log scale
 ##' n  = 100000
 ##' df = 3
 ##' y  = rchisq(n=n, df=df)
 ##' x  = log(y)
 ##'
+##' ## Plot histograms of the two random variables
 ##' par(mfrow=n2mfrow(2))
 ##' ## Plot 1
 ##' hist(x, n=100, freq=FALSE, main="", xlab= "x = log(y)")
@@ -29,15 +31,28 @@
 ##' hist(yNew, n=100, freq=FALSE, xlab="y = exp(x)", main="")
 ##' curve(dchisq(x, df=df), 0, 30, n=1001, col="red", lwd=3, add=TRUE)
 ##'
+##' ## Create a NIMBLE model that uses this transformed distribution
 ##' code = nimbleCode({
 ##'   x ~ dLogChisq(df = 0.5)
+##'   y <- exp(x)
 ##' })
+##'
+##' \dontrun{
+##' ## Build & compile the model
 ##' modelR = nimbleModel(code=code)
 ##' modelC = compileNimble(modelR)
-##' conf  = configureMCMC(modelC)
-##' mcmc  = buildMCMC(conf=conf)
-##' cMcmc = compileNimble(mcmc)
-##' x = as.vector(runMCMC(mcmc=cMcmc, niter=50000))
+##'
+##' ## Configure, build and compile an MCMC
+##' conf   = configureMCMC(modelC, monitors=c("x","y"))
+##' mcmc   = buildMCMC(conf=conf)
+##' cMcmc  = compileNimble(mcmc)
+##'
+##' ## Run the MCMC
+##' samps = runMCMC(mcmc=cMcmc, niter=50000)
+##' x     = samps[,"x"]
+##' y     = samps[,"y"]
+##'
+##' ## Plot MCMC output
 ##' par(mfrow=n2mfrow(3))
 ##' ## Plot 1: MCMC trajectory
 ##' plot(x, typ="l")
@@ -45,8 +60,9 @@
 ##' hist(x, n=100, freq=FALSE, main="Histogram of MCMC samples", xlab="x = log(y)")
 ##' curve(dLogChisq(x, df=0.5), -55, 5, n=1001, col="red", lwd=3, add=TRUE)
 ##' ## Plot 3: taget density on bounded scale
-##' hist(exp(x), n=100, freq=FALSE, xlab="y = exp(x)", main="Back-transformed MCMC samples")
+##' hist(y, n=100, freq=FALSE, xlab="y = exp(x)", main="Back-transformed MCMC samples")
 ##' curve(dchisq(x, df=0.5), 0, 20, n=1001, col="red", lwd=3, add=TRUE)
+##' }
 
 NULL
 

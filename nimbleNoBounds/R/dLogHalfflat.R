@@ -5,7 +5,7 @@
 ##'
 ##' @name dLogHalfflat
 ##'
-##' @param x A continuous random variable on the real line, where y=exp(x) and y ~ dhalflat().
+##' @param x A continuous random variable on the real line, where y=exp(x) and y ~ dhalfflat().
 ##' @param log Logical flag to toggle returning the log density.
 ##' @param n Number of random variables. Currently limited to 1, as is common in nimble. See ?replicate for an alternative. Note, NAN will be returned because distribution is improper.
 ##' @import nimble

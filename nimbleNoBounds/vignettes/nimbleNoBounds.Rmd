@@ -13,7 +13,7 @@ vignette: >
 
 
 
-This vignette assumes the reader is already familiar with using [nimble](https://r-nimble.org/) to perform Markov chain Monte Carlo (MCMC).
+This vignette assumes the reader is already familiar with using [NIMBLE](https://r-nimble.org/) to perform Markov chain Monte Carlo (MCMC).
 
 The principal motivation of this package is that bounds on prior distributions can impair MCMC performance when posterior distributions are located close to those bounds.
 In particular, when using Metropolis-Hastings, proposals made beyond the known bounds of a distribution will inflate rejection rates.
@@ -23,10 +23,10 @@ The result can therefore be reduced MCMC efficiency.
 
 
 This package offers a simple solution to avoid this scenario.
-Common bounded probability distributions (beta, uniform, exponential, gamma, chi-squared, half-flat, inverse-gamma, log-normal, weibull)
+Common bounded probability distributions (beta, uniform, exponential, gamma, chi-squared, half-flat, inverse-gamma, log-normal, Weibull)
 are transformed, via log or logit transformations, to the unbounded real line.
 The change of variables technique is used to obtain the transformed distributions.
-The resulting distributions are provided here for use in nimble models.
+The resulting distributions are provided here for use in NIMBLE models.
 
 In this vignette we explore the potential efficiency gains with a simple toy example.
 
@@ -65,7 +65,7 @@ knitr::opts_chunk$set(
 
 The following toy problem compares sampling of bounded and unbounded distributions.
 
-First, we create nimble models with both classical bounded distributions, and with unbounded transformed equivalents.
+First, we create NIMBLE models with both classical bounded distributions, and with unbounded transformed equivalents.
 
 ```{r model, message=FALSE, warning=FALSE}
 library(nimbleNoBounds) # Also loads nimble
@@ -130,7 +130,7 @@ monitorNodes  = stochNodesB
 distributions = substring(rBounded$getDistribution(monitorNodes), 2, 99)
 ```
 
-Now we perform MCMC using nimble's univariate Metropolis-Hastings sampler.
+Now we perform MCMC using NIMBLE'S univariate Metropolis-Hastings sampler.
 We use `B` to indicate _bounded_ and `U` to indicate _unbounded_.
 The aim is to calculate the efficiency gain when sampling each distribution on the real line.
 This is done within a loop so that between-run variation can be accounted for.

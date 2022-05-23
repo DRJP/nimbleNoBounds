@@ -39,7 +39,7 @@
 ##'   log(y) ~ dLogWeib(shape=shape, scale=scale)
 ##' })
 ##'
-##' \dontrun{
+##' \donttest{
 ##' ## Build & compile the model
 ##' const = list (shape=shape, scale=scale)
 ##' modelR = nimbleModel(code=code, const=const)

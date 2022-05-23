@@ -40,7 +40,7 @@
 ##'   x ~ dLogitBeta(sh1, sh2)
 ##' })
 ##'
-##' \dontrun{
+##' \donttest{
 ##' ## Build & compile the model
 ##' const = list(sh1=sh1, sh2=sh2)
 ##' modelR = nimbleModel(code=code, const=const)

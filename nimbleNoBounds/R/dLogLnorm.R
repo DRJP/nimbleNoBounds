@@ -38,7 +38,7 @@
 ##'   log(y) ~ dLogLnorm(meanlog=meanlog, sdlog=sdlog)
 ##' })
 ##'
-##' \dontrun{
+##' \donttest{
 ##' ## Build & compile the model
 ##' const = list (meanlog=meanlog, sdlog=sdlog)
 ##' modelR = nimbleModel(code=code, const=const)

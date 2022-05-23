@@ -3,7 +3,7 @@ Type: Package
 Title: Transformed Distributions for Improved MCMC Efficiency
 Version: 1.0.1
 Encoding: UTF-8
-Date: 2022-05-10
+Date: 2022-05-24
 Maintainer: David Pleydell <david.pleydell@inrae.fr>
 Authors@R: person("David", "Pleydell", email="david.pleydell@inrae.fr", role=c("aut","cre","cph"), comment = c("Package developer", ORCID = "0000-0002-6450-1475"))
 URL: https://github.com/DRJP/nimbleNoBounds

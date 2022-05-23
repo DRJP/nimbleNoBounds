@@ -38,7 +38,7 @@
 ##'   x ~ dLogitUnif(lower, upper)
 ##' })
 ##'
-##' \dontrun{
+##' \donttest{
 ##' ## Build & compile the model
 ##' const = list(lower=lower, upper=upper)
 ##' modelR = nimbleModel(code=code, const=const)

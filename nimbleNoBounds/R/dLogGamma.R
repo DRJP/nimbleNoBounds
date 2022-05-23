@@ -40,7 +40,7 @@
 ##'   log(y3) ~ dLogGamma(mean=shape*scale, sd=scale * sqrt(shape))
 ##' })
 ##'
-##' \dontrun{
+##' \donttest{
 ##' ## Build & compile the model
 ##' const = list (shape=shape, scale=scale)
 ##' modelR = nimbleModel(code=code, const=const)

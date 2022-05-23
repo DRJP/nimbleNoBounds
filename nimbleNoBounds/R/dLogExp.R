@@ -37,7 +37,7 @@
 ##'   y <- exp(x)
 ##' })
 ##'
-##' \dontrun{
+##' \donttest{
 ##' ## Build & compile the model
 ##' modelR = nimbleModel(code=code)
 ##' modelC = compileNimble(modelR)

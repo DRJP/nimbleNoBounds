@@ -21,6 +21,7 @@
 ##' x  = log(y)
 ##'
 ##' ## Plot histograms of the two random variables
+##' oldpar <- par()
 ##' par(mfrow=n2mfrow(2))
 ##' ## Plot 1
 ##' hist(x, n=100, freq=FALSE, main="", xlab= "x = log(y)")
@@ -30,6 +31,7 @@
 ##' yNew = exp(xNew)
 ##' hist(yNew, n=100, freq=FALSE, xlab="y = exp(x)", main="")
 ##' curve(dchisq(x, df=df), 0, 30, n=1001, col="red", lwd=3, add=TRUE)
+##' par(oldpar)
 ##'
 ##' ## Create a NIMBLE model that uses this transformed distribution
 ##' code = nimbleCode({
@@ -53,6 +55,7 @@
 ##' y     = samps[,"y"]
 ##'
 ##' ## Plot MCMC output
+##' oldpar <- par()
 ##' par(mfrow=n2mfrow(3))
 ##' ## Plot 1: MCMC trajectory
 ##' plot(x, typ="l")
@@ -62,6 +65,7 @@
 ##' ## Plot 3: taget density on bounded scale
 ##' hist(y, n=100, freq=FALSE, xlab="y = exp(x)", main="Back-transformed MCMC samples")
 ##' curve(dchisq(x, df=0.5), 0, 20, n=1001, col="red", lwd=3, add=TRUE)
+##' par(oldpar)
 ##' }
 
 NULL

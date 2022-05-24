@@ -21,6 +21,7 @@
 ##' x      = log(y)
 ##'
 ##' ## Plot histograms of the two random variables
+##' oldpar <- par()
 ##' par(mfrow=n2mfrow(2))
 ##' ## Plot 1
 ##' hist(x, n=100, freq=FALSE)
@@ -30,6 +31,7 @@
 ##' yNew   = exp(xNew)
 ##' hist(yNew, n=100, freq=FALSE, xlab="exp(x)")
 ##' curve(dexp(x, rate=lambda), 0, 4, n=1001, col="red", lwd=3, add=TRUE)
+##' par(oldpar)
 ##'
 ##' ## Create a NIMBLE model that uses this distribution
 ##' code = nimbleCode({
@@ -53,6 +55,7 @@
 ##' y     = samps[,"y"]
 ##'
 ##' ## Plot MCMC output
+##' oldpar <- par()
 ##' par(mfrow=n2mfrow(3))
 ##' ## Plot 1: MCMC trajectory
 ##' plot(x, typ="l")
@@ -62,6 +65,7 @@
 ##' ## Plot 3: taget density on bounded scale
 ##' hist(y, n=100, freq=FALSE)
 ##' curve(dexp(x, rate=0.5), 0, 25, n=1001, col="red", lwd=3, add=TRUE)
+##' par(oldpar)
 ##' }
 
 NULL

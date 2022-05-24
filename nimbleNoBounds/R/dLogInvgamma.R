@@ -25,6 +25,7 @@
 ##' x      = log(y)
 ##'
 ##' ## Plot histograms of the two random variables
+##' oldpar <- par()
 ##' par(mfrow=n2mfrow(4))
 ##' ## Plot 1
 ##' hist(y, n=100, freq=FALSE, xlab="y")
@@ -41,6 +42,7 @@
 ##' yNew = exp(xNew)
 ##' hist(yNew, n=100, freq=FALSE, xlab="exp(x)")
 ##' curve(dinvgamma(x, shape=shape, scale=scale), 0, 1, n=5001, col="red", lwd=3, add=TRUE)
+##' par(oldpar)
 ##'
 ##' ## Create a NIMBLE model that uses this transformed distribution
 ##' code = nimbleCode({
@@ -66,6 +68,7 @@
 ##'
 ##'
 ##' ## Plot MCMC output
+##' oldpar <- par()
 ##' par(mfrow=n2mfrow(3))
 ##' ## Plot 1: MCMC trajectory
 ##' plot(x, typ="l")
@@ -76,6 +79,7 @@
 ##' curve(dinvgamma(x, shape=shape, scale=scale), xlab="y = exp(x)", 0, 0.5, n=1001, col="red", lwd=3)
 ##' hist(y, n=100, freq=FALSE, add=TRUE)
 ##' curve(dinvgamma(x, shape=shape, scale=scale), 0, 0.5, n=1001, col="red", add=TRUE, lwd=3)
+##' par(oldpar)
 ##' }
 
 NULL

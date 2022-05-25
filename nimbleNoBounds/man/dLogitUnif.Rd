@@ -36,6 +36,7 @@ y      = runif(n=n, lower, upper)
 x      = logit((y-lower)/(upper-lower))
 
 ## Plot histograms of the two random variables
+oldpar <- par()
 par(mfrow=n2mfrow(2))
 ## Plot 1
 hist(x, n=100, freq=FALSE)
@@ -45,13 +46,14 @@ xNew = replicate(n=n, rLogitUnif(n=1, lower, upper))
 yNew   = ilogit(xNew) * (upper-lower) + lower
 hist(yNew, n=100, freq=FALSE, xlab="exp(x)")
 curve(dunif(x, lower, upper), -15, 15, n=1001, col="red", lwd=3, add=TRUE)
+par(oldpar)
 
 ## Create a NIMBLE model that uses this transformed distribution
 code = nimbleCode({
   x ~ dLogitUnif(lower, upper)
 })
 
-\dontrun{
+\donttest{
 ## Build & compile the model
 const = list(lower=lower, upper=upper)
 modelR = nimbleModel(code=code, const=const)
@@ -66,6 +68,7 @@ cMcmc = compileNimble(mcmc)
 x = as.vector(runMCMC(mcmc=cMcmc, niter=50000))
 
 ## Plot MCMC output
+oldpar <- par()
 par(mfrow=n2mfrow(3))
 ## Plot 1: MCMC trajectory
 plot(x, typ="l")
@@ -75,6 +78,7 @@ curve(dLogitUnif(x, lower, upper), -15, 15, n=1001, col="red", lwd=3, add=TRUE)
 ## Plot 3: taget density on bounded scale
 hist(ilogit(x)*(upper-lower)+lower, n=100, freq=FALSE, xlab="y")
 curve(dunif(x, lower, upper), -15, 15, n=1001, col="red", lwd=3, add=TRUE)
+par(oldpar)
 }
 }
 \author{

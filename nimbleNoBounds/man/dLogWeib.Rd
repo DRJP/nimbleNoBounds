@@ -36,6 +36,7 @@ y      = rweibull(n=n, shape=shape, scale=scale)
 x      = log(y)
 
 ## Plot histograms of the two random variables
+oldpar <- par()
 par(mfrow=n2mfrow(2))
 ## Plot 1
 hist(x, n=100, freq=FALSE, xlab="x = log(y)",
@@ -46,13 +47,14 @@ xNew = replicate(n=n, rLogWeib(n=1, shape=shape, scale=scale))
 yNew = exp(xNew)
 hist(yNew, n=100, freq=FALSE, xlab="y = exp(x)", main="Histogram of random numbers from rLogWeib.")
 curve(dweibull(x, shape=shape, scale=scale), 0, 100, n=1001, col="red", lwd=3, add=TRUE)
+par(oldpar)
 
 ## Create a NIMBLE model that uses this transformed distribution
 code = nimbleCode({
   log(y) ~ dLogWeib(shape=shape, scale=scale)
 })
 
-\dontrun{
+\donttest{
 ## Build & compile the model
 const = list (shape=shape, scale=scale)
 modelR = nimbleModel(code=code, const=const)
@@ -69,6 +71,7 @@ x = as.vector(runMCMC(mcmc=cMcmc, niter=50000))
 y = exp(x)
 
 ## Plot MCMC output
+oldpar <- par()
 par(mfrow=n2mfrow(3))
 ## Plot 1: MCMC trajectory
 plot(x, typ="l")
@@ -79,6 +82,7 @@ curve(dLogWeib(x, shape=shape, scale=scale), -5, 3, n=1001, col="red", lwd=3, ad
 hist(y, n=100, freq=FALSE, xlab="y = exp(x)",
      main="Histogram of back-transformed MCMC samples")
 curve(dweibull(x, shape=shape, scale=scale), 0, 8, n=1001, col="red", lwd=3, add=TRUE)
+par(oldpar)
 }
 }
 \author{

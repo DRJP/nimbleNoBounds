@@ -36,6 +36,7 @@ y      = rbeta(n=n, sh1, sh2)
 x      = logit(y)
 
 ## Plot histograms of the two random variables
+oldpar <- par()
 par(mfrow=n2mfrow(2))
 ## Plot 1
 hist(x, n=100, freq=FALSE)
@@ -45,13 +46,14 @@ xNew = replicate(n=n, rLogitBeta(n=1, sh1, sh2))
 yNew   = ilogit(xNew)
 hist(yNew, n=100, freq=FALSE, xlab="exp(x)")
 curve(dbeta(x, sh1, sh2), 0, 1, n=1001, col="red", lwd=3, add=TRUE)
+par(oldpar)
 
 ## Create a NIMBLE model that uses this transformed distribution
 code = nimbleCode({
   x ~ dLogitBeta(sh1, sh2)
 })
 
-\dontrun{
+\donttest{
 ## Build & compile the model
 const = list(sh1=sh1, sh2=sh2)
 modelR = nimbleModel(code=code, const=const)
@@ -66,6 +68,7 @@ cMcmc = compileNimble(mcmc)
 x = as.vector(runMCMC(mcmc=cMcmc, niter=50000))
 
 ## Plot MCMC output
+oldpar <- par()
 par(mfrow=n2mfrow(3))
 ## Plot 1: MCMC trajectory
 plot(x, typ="l")
@@ -75,6 +78,7 @@ curve(dLogitBeta(x, sh1, sh2), -15, 5, n=1001, col="red", lwd=3, add=TRUE)
 ## Plot 3: taget density on bounded scale
 hist(ilogit(x), n=100, freq=FALSE, xlab="y")
 curve(dbeta(x, sh1, sh2), 0, 1, n=1001, col="red", lwd=3, add=TRUE)
+par(oldpar)
 }
 }
 \author{

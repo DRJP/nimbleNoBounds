@@ -36,6 +36,7 @@ y      = rgamma(n=n, shape=shape, scale=scale)
 x      = log(y)
 
 ## Plot histograms of the two random variables
+oldpar <- par()
 par(mfrow=n2mfrow(2))
 ## Plot 1
 hist(x, n=100, freq=FALSE)
@@ -45,6 +46,7 @@ xNew = replicate(n=n, rLogGamma(n=1, shape=shape, scale=scale))
 yNew   = exp(xNew)
 hist(yNew, n=100, freq=FALSE, xlab="exp(x)")
 curve(dgamma(x, shape=shape, scale=scale), 0, 100, n=1001, col="red", lwd=3, add=TRUE)
+par(oldpar)
 
 ## Create a NIMBLE model that uses this distribution
 code = nimbleCode({
@@ -53,7 +55,7 @@ code = nimbleCode({
   log(y3) ~ dLogGamma(mean=shape*scale, sd=scale * sqrt(shape))
 })
 
-\dontrun{
+\donttest{
 ## Build & compile the model
 const = list (shape=shape, scale=scale)
 modelR = nimbleModel(code=code, const=const)
@@ -75,6 +77,7 @@ y2 = as.vector(samps[[2]][,"y2"])
 y3 = as.vector(samps[[2]][,"y3"])
 
 ## Plot MCMC output
+oldpar <- par()
 par(mfrow=n2mfrow(4))
 ## Plot 1: MCMC trajectory
 plot(x, typ="l")
@@ -90,6 +93,7 @@ xLims = range(pretty(range(samps[[1]])))
 hist(x, breaks=seq(xLims[1], xLims[2], l=nBreaks), col=rgb(1, 0, 0, 0.1))
 hist(x2, breaks=seq(xLims[1], xLims[2], l=nBreaks), col=rgb(0, 1, 0, 0.1), add=TRUE)
 hist(x3, breaks=seq(xLims[1], xLims[2], l=nBreaks), col=rgb(0, 0, 1, 0.1), add=TRUE)
+par(oldpar)
 }
 
 }

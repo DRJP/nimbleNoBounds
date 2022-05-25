@@ -10,7 +10,7 @@ dLogChisq(x, df = 1, log = 0)
 rLogChisq(n = 1, df = 1)
 }
 \arguments{
-\item{x}{A continuous random variable on the real line, where y=exp(x) and y ~ dchsq(df).}
+\item{x}{A continuous random variable on the real line, where y=exp(x) and y ~ dchisq(df).}
 
 \item{df}{df parameter of y ~ dchisq(df).}
 
@@ -33,6 +33,7 @@ y  = rchisq(n=n, df=df)
 x  = log(y)
 
 ## Plot histograms of the two random variables
+oldpar <- par()
 par(mfrow=n2mfrow(2))
 ## Plot 1
 hist(x, n=100, freq=FALSE, main="", xlab= "x = log(y)")
@@ -42,6 +43,7 @@ xNew = replicate(n=n, rLogChisq(n=1, df=df))
 yNew = exp(xNew)
 hist(yNew, n=100, freq=FALSE, xlab="y = exp(x)", main="")
 curve(dchisq(x, df=df), 0, 30, n=1001, col="red", lwd=3, add=TRUE)
+par(oldpar)
 
 ## Create a NIMBLE model that uses this transformed distribution
 code = nimbleCode({
@@ -49,7 +51,7 @@ code = nimbleCode({
   y <- exp(x)
 })
 
-\dontrun{
+\donttest{
 ## Build & compile the model
 modelR = nimbleModel(code=code)
 modelC = compileNimble(modelR)
@@ -65,6 +67,7 @@ x     = samps[,"x"]
 y     = samps[,"y"]
 
 ## Plot MCMC output
+oldpar <- par()
 par(mfrow=n2mfrow(3))
 ## Plot 1: MCMC trajectory
 plot(x, typ="l")
@@ -74,6 +77,7 @@ curve(dLogChisq(x, df=0.5), -55, 5, n=1001, col="red", lwd=3, add=TRUE)
 ## Plot 3: taget density on bounded scale
 hist(y, n=100, freq=FALSE, xlab="y = exp(x)", main="Back-transformed MCMC samples")
 curve(dchisq(x, df=0.5), 0, 20, n=1001, col="red", lwd=3, add=TRUE)
+par(oldpar)
 }
 }
 \author{

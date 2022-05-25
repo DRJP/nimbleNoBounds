@@ -10,7 +10,7 @@ dLogHalfflat(x, log = 0)
 rLogHalfflat(n = 1)
 }
 \arguments{
-\item{x}{A continuous random variable on the real line, where y=exp(x) and y ~ dhalflat().}
+\item{x}{A continuous random variable on the real line, where y=exp(x) and y ~ dhalfflat().}
 
 \item{log}{Logical flag to toggle returning the log density.}
 
@@ -25,12 +25,14 @@ Note, both dhalfflat and dLogHalfflat are improper. Thus, rLogHalfflat returns N
 }
 \examples{
 
+oldpar <- par()
 par(mfrow=n2mfrow(2))
 ## Plot 1
 curve(dhalfflat(x), -11, 11, n=1001, col="red", lwd=3, xlab="y = exp(x)", ylab="dhalfflat(y)")
 ## Plot 2: back-transformed
 curve(dLogHalfflat(x), -5, 1.5, n=1001, col="red", lwd=3, , xlab="x = log(y)")
 abline(v=0:1, h=c(0,1,exp(1)), col="grey")
+par(oldpar)
 
 }
 \author{

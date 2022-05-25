@@ -8,6 +8,8 @@ library(here)
 setwd(here::here("nimbleNoBounds"))
 getwd()
 
+## DON'T FORGET THIS STEP: "~/nimbleProjects/nimbleNoBounds/buildingPackageCommands.R"
+
 rhub::check()
 ## 11h53 ran command - 12h03 preperror email
 ## 15: Ubuntu Linux 20.04.1 LTS, R-devel, GCC (ubuntu-gcc-devel)
@@ -39,8 +41,8 @@ devtools::check()
 # Or... alternatively, perhaps this can help...
 # https://stackoverflow.com/questions/63586750/error-with-ubuntu-linux-when-running-check-rhub-due-to-xml-library
 # platforms()
-res  = rhub::check(platform="ubuntu-gcc-release")
-#res2 = rhub::check(platform="ubuntu-gcc-devel")
+res  = rhub::check(platform="ubuntu-gcc-release") # Run from: /home/pleydell/nimbleProjects/nimbleNoBounds/nimbleNoBounds
+## res2 = rhub::check(platform="ubuntu-gcc-devel")
 ## SUGGESTS IT'S AN EIGEN or RHUB PROBLEM
 ## It is an Rhub problem!!!
 ## https://github.com/r-hub/rhub/issues/448#issuecomment-1009922117

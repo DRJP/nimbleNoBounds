@@ -9,10 +9,10 @@ See vignette("nimbleNoBounds") for several examples.
 
 Installation
 ------------
-<!-- The package can be installed from CRAN. In the R console, just write -->
-<!-- ``` -->
-<!-- install.packages("nimbleNoBounds") -->
-<!-- ``` -->
+The package can be installed from CRAN. In the R console, just write
+```
+install.packages("nimbleNoBounds")
+```
 
 The package can be installed from github using the R package 'remotes' as follows.
 ```

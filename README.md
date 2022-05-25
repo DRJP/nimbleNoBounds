@@ -9,7 +9,7 @@ See vignette("nimbleNoBounds") for several examples.
 
 Installation
 ------------
-The package can be installed from CRAN. In the R console, just write
+The package can be installed from [CRAN](https://cran.r-project.org/web/packages/nimbleNoBounds/index.html). In the R console, just write
 ```
 install.packages("nimbleNoBounds")
 ```

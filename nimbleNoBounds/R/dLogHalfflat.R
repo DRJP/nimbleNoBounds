@@ -52,7 +52,7 @@ rLogHalfflat <- nimbleFunction (
     returnType(double(0))
     if(n != 1)
       nimPrint("Warning: rLogHalfflat only allows n = 1; Using n = 1.\n")
-    x <- rhalfflat(n=n)
+    x <- rhalfflat(n=1)
     return(x)
   }
 )

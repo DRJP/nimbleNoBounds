@@ -1,7 +1,7 @@
 Package: nimbleNoBounds
 Type: Package
 Title: Transformed Distributions for Improved MCMC Efficiency
-Version: 1.0.1
+Version: 1.0.2
 Encoding: UTF-8
 Date: 2022-05-24
 Maintainer: David Pleydell <david.pleydell@inrae.fr>

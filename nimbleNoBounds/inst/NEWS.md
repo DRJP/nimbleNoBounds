@@ -1,3 +1,8 @@
+                            CHANGES IN VERSION 1.0.2 (February 2023)
+
+USER LEVEL CHANGES
+-- Bug fix in rHalfflat. Noforces n=1, as everywhere else in nimble.
+
                             CHANGES IN VERSION 1.0.1 (May 2022)
 
 USER LEVEL CHANGES

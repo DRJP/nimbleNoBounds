@@ -34,7 +34,9 @@ results$cran_summary()
 ## 18h email 3
 
 
-# Alternatively
+###################
+## ALTERNATIVELY ##
+###################
 devtools::check_rhub()
 devtools::check()
 

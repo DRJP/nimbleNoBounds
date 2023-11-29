@@ -101,7 +101,7 @@ unboundedDistributionsModel <- nimbleCode({
   g  <- exp(tg)
   ig <- exp(tig) ## Currently doesn't compile if a node is called "i"
   l  <- exp(tl)
-  u  <- (u2*exp(tu)+u1)/(u2-u1)
+  u  <- ilogit(tu)*(u2-u1)+u1 ## Scaled and shifted output from ilogit transformation
   w  <- exp(tw)
 })
 

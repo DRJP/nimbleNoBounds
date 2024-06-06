@@ -51,7 +51,6 @@ par(oldpar)
 ## Create a NIMBLE model that uses this transformed distribution
 code = nimbleCode({
   x ~ dLogitUnif(lower, upper)
-  y <- ilogit(x)*(upper-lower)+lower
 })
 
 \donttest{
@@ -61,15 +60,12 @@ modelR = nimbleModel(code=code, const=const)
 modelC = compileNimble(modelR)
 
 ## Configure, build and compile an MCMC
-conf  = configureMCMC(modelC, monitors=c("x","y"))
+conf  = configureMCMC(modelC)
 mcmc  = buildMCMC(conf=conf)
 cMcmc = compileNimble(mcmc)
 
 ## Run the MCMC
-samps = runMCMC(mcmc=cMcmc, niter=50000)
-x = samps[,"x"]
-y = samps[,"y"]
-
+x = as.vector(runMCMC(mcmc=cMcmc, niter=50000))
 
 ## Plot MCMC output
 oldpar <- par()
@@ -80,7 +76,7 @@ plot(x, typ="l")
 hist(x, n=100, freq=FALSE, xlab="x = logit(y)")
 curve(dLogitUnif(x, lower, upper), -15, 15, n=1001, col="red", lwd=3, add=TRUE)
 ## Plot 3: taget density on bounded scale
-hist(y, n=100, freq=FALSE, xlab="y")
+hist(ilogit(x)*(upper-lower)+lower, n=100, freq=FALSE, xlab="y")
 curve(dunif(x, lower, upper), -15, 15, n=1001, col="red", lwd=3, add=TRUE)
 par(oldpar)
 }

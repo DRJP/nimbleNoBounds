@@ -10,33 +10,18 @@ getwd()
 
 ## DON'T FORGET THIS STEP: "~/nimbleProjects/nimbleNoBounds/buildingPackageCommands.R"
 
-rhub::check()
-## 11h53 ran command - 12h03 preperror email
-## 15: Ubuntu Linux 20.04.1 LTS, R-devel, GCC (ubuntu-gcc-devel)
-
-## Info on last submission to rhub
-rhub::last_check()
-rhub::last_check()$cran_summary()
-
-
-# From https://www.mzes.uni-mannheim.de/socialsciencedatalab/article/r-package/#subsection6-1
-# Check for CRAN specific requirements using rhub and
-# save it in the results objects
-#
-# results <- (rhub::check_for_cran())$cran_summary()
-results <- rhub::check_for_cran()
-# Get the summary of your results
-results$cran_summary()
-
-## 18h25 launched
-## 18h email 1
-## 18h email 2
-## 18h email 3
+##############################################
+## All the rhub stuff below is depreicated. ##
+## Here's how to use the new rhub           ##
+## https://blog.r-hub.io/2024/04/11/rhub2/  ##
+##############################################
+rhub::rc_submit()
 
 
-###################
-## ALTERNATIVELY ##
-###################
+
+##################################
+## Is this still functional ??? ##
+##################################
 devtools::check_rhub()
 devtools::check()
 

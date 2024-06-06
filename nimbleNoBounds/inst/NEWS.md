@@ -1,7 +1,12 @@
+                            CHANGES IN VERSION 1.0.3 (November 2023)
+
+USER LEVEL CHANGES
+-- Bug fix in the vignette and clarification of back-transform in the dLogitUnif help file example.
+
                             CHANGES IN VERSION 1.0.2 (February 2023)
 
 USER LEVEL CHANGES
--- Bug fix in rHalfflat. Noforces n=1, as everywhere else in nimble.
+-- Bug fix in rHalfflat. 'No' forces n=1, as everywhere else in nimble.
 
                             CHANGES IN VERSION 1.0.1 (May 2022)
 
